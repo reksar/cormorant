@@ -14,3 +14,9 @@
 if (! defined('WPINC')) die;
 define('CORMORANT', plugin_basename(__FILE__));
 define('CORMORANT_DIR', plugin_dir_path(__FILE__));
+
+require_once 'core/class-cormorant.php';
+
+$cormorant = new Cormorant();
+register_activation_hook(__FILE__, [$cormorant, 'activate']);
+register_deactivation_hook(__FILE__, [$cormorant, 'deactivate']);
