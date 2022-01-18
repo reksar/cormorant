@@ -29,7 +29,17 @@ class Cormorant
     /**
      * When WP finishes the plugin deactivation.
      */
-    public function deactivate() {}
+    public function deactivate()
+    {
+        // This method may be invoked during the plugin activation if the 
+        // plugin deactivates self due to errors.
+        //
+        // This hack prevents showing the notice about the plugin activation 
+        // success in this case.
+        //
+        // @see wp-admin/plugins.php
+        unset($_GET['activate']);
+    }
 
     /**
      * On WP init.
