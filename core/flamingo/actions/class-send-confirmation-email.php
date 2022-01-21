@@ -40,7 +40,6 @@ class Send_Confirmation_Email
     private static function process(array $form_data)
     {
         $contact = new \flamingo\Contact($form_data);
-
-        if (! $contact->is_confirmed()) new \Confirmation_Email($contact);
+        $contact->is_confirmed() ?: (new \Confirmation_Email($contact))->send();
     }
 }

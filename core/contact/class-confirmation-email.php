@@ -11,7 +11,6 @@ class Confirmation_Email
     {
         $this->email = $contact->email();
         $this->token = $contact->token();
-        $this->send();
     }
 
     public function email(): string
