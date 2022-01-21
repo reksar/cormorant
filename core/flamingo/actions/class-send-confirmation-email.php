@@ -1,8 +1,7 @@
 <?php namespace flamingo\action;
 
-require_once CORMORANT_DIR . 'core\contact\interface-contact.php';
-require_once CORMORANT_DIR . 'core\contact\class-confirmation-email.php';
-require_once CORMORANT_DIR . 'core\flamingo\class-contact.php';
+require_once CORMORANT_DIR . 'core/contact/class-confirmation-email.php';
+require_once CORMORANT_DIR . 'core/flamingo/class-contact.php';
 
 // This status is telling that Contact Form 7 has been sent normally and 
 // the Flamingo gets valid contact form data.
@@ -28,18 +27,24 @@ class Send_Confirmation_Email
      */
     public function __invoke(array $form_data): array
     {
-        if (STATUS_OK === $form_data['status']) self::process($form_data);
+        // Something is wrong, but it is not our war.
+        if (STATUS_OK !== $form_data['status']) return $form_data;
 
-        return $form_data;
+        try {
+            self::send_email_to_contact_from($form_data);
+        }
+        catch (\flamingo\Err_No_Contact $e) {
+            error_log($e->getMessage());
+        }
+        finally {
+            return $form_data;
+        }
     }
 
-    /*
-     * Compose the `Contact` from form data, build and send the 
-     * `Confirmation_Email`.
-     */
-    private static function process(array $form_data)
+    private static function send_email_to_contact_from(array $form_data)
     {
-        $contact = new \flamingo\Contact($form_data);
+        $email = $form_data[''] ?? '';
+        $contact = new \flamingo\Contact($email);
         $contact->is_confirmed() ?: (new \Confirmation_Email($contact))->send();
     }
 }
