@@ -43,7 +43,7 @@ class Send_Confirmation_Email
 
     private static function send_email_to_contact_from(array $form_data)
     {
-        $email = $form_data[''] ?? '';
+        $email = $form_data['from_email'] ?? '';
         $contact = new \flamingo\Contact($email);
         $contact->is_confirmed() ?: (new \Confirmation_Email($contact))->send();
     }
