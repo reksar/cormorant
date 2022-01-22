@@ -37,6 +37,8 @@ class Contact implements \Contact
 
     public function token(): string
     {
-        return '12345';
+        $salt = (string) $this->flamingo_contact->id();
+        $payload = $this->email() . ':' . $salt;
+        return base64_encode($payload);
     }
 }
