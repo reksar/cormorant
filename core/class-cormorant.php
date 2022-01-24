@@ -3,6 +3,7 @@
 require_once CORMORANT_DIR . 'admin/class-admin.php';
 require_once 'flamingo/flamingo.php';
 require_once 'flamingo/actions/class-send-confirmation-email.php';
+require_once 'flamingo/actions/class-confirm-contact-email.php';
 
 // For `deactivate_plugins()`
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -53,8 +54,8 @@ class Cormorant
     private function add_actions()
     {
         new flamingo\action\Send_Confirmation_Email();
+        new flamingo\action\Confirm_Contact_Email();
 
-        // TODO: process confirmation link following.
         // TODO: clear unconfirmed contacts.
     }
 
