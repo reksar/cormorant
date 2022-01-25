@@ -5,7 +5,7 @@ require_once 'interface-contact.php';
 class Confirmation_Email
 {
     const ACTION = 'confirm_email';
-    const TOKEN_NAME = 'token';
+    const TOKEN_URL_PARAM = 'token';
 
     private string $email;
     private string $token;
@@ -39,7 +39,7 @@ class Confirmation_Email
     public function confirmation_link(): string
     {
         $action = self::ACTION;
-        $token_name = self::TOKEN_NAME;
+        $token_name = self::TOKEN_URL_PARAM;
         $token = urlencode($this->token);
         $url_suffix = "admin-post.php?action=$action&$token_name=$token";
 

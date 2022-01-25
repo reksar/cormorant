@@ -37,13 +37,13 @@ class Confirm_Contact_Email
 
     private static function token(): string
     {
-        $token_name = \Confirmation_Email::TOKEN_NAME;
-        $token = filter_input(INPUT_GET, $token_name, FILTER_CALLBACK, [
+        $token_param = \Confirmation_Email::TOKEN_URL_PARAM;
+        $token = filter_input(INPUT_GET, $token_param, FILTER_CALLBACK, [
             // Will pass urldecoded token value.
             'options' => '\flamingo\contact\token\filter',
         ]);
 
-        if (! $token) throw new \err\Bad_Token($_GET[$token_name]);
+        if (! $token) throw new \err\Bad_Token($_GET[$token_param]);
 
         return $token;
     }
