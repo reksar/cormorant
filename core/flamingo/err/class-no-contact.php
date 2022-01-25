@@ -1,6 +1,6 @@
-<?php namespace flamingo;
+<?php namespace err;
 
-class Err_No_Contact extends \Exception
+class No_Contact extends \Exception
 {
     public function __construct(string $email)
     {

@@ -2,43 +2,58 @@
 
 require_once WP_CONTENT_DIR . '/plugins/flamingo/includes/class-contact.php';
 require_once CORMORANT_DIR . 'core/contact/interface-contact.php';
-require_once 'class-err-no-contact.php';
+require_once 'token.php';
+
+use \flamingo\contact\token as token;
 
 /*
  * Adapter for the `Flamingo_Contact` from the original Flamingo plugin.
  */
 class Contact implements \Contact
 {
-    private $flamingo_contact;
+    const TAG_TAXONOMY = \Flamingo_Contact::contact_tag_taxonomy;
+    const TAG_CONFIRMED = 'confirmed';
 
-    public function __construct(string $email)
+    private \Flamingo_Contact $contact;
+
+    public function __construct(\Flamingo_Contact $contact)
     {
-        // The `Flamingo_Contact::search_by_email()` returns one of existing 
-        // contacts even we searching by empty email, so we must do this first.
-        if (! $email) throw new Err_No_Contact($email);
-
-        $this->flamingo_contact = \Flamingo_Contact::search_by_email($email);
-
-        // Current Flamingo version returns `NULL` if can't find a contact by 
-        // email.
-        if (! $this->flamingo_contact) throw new Err_No_Contact($email);
+        $this->contact = $contact;
     }
 
-    public function is_confirmed(): bool
+    public function id(): int
     {
-        return false;
+        return $this->contact->id();
     }
 
     public function email(): string
     {
         // Yes, it is public. Takayuki is risky dude :)
-        return $this->flamingo_contact->email;
+        return $this->contact->email;
     }
 
     public function token(): string
     {
-        $salt = (string) $this->flamingo_contact->id();
-        $payload = $this->email() . ':' . $salt;
-        return base64_encode($payload);
+        return token\from_contact($this);
+    }
+
+    public function tag_names(): array
+    {
+		$tags = wp_get_post_terms($this->id(), self::TAG_TAXONOMY);
+        return array_map(function($tag) {return $tag->name;}, $tags);
+    }
+
+    public function is_confirmed(): bool
+    {
+        return in_array(self::TAG_CONFIRMED, $this->tag_names());
+    }
+
+    public function confirm()
+    {
+        wp_set_post_terms(
+            $this->id(),
+            self::TAG_CONFIRMED,
+            self::TAG_TAXONOMY,
+            true);
     }
 }
