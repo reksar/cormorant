@@ -23,11 +23,11 @@ function id(string $token): int
     return (int) explode(SEPARATOR, $payload)[1];
 }
 
-function filter($token): ?string
+function filter(string $token): ?string
 {
     return filter_var($token, FILTER_VALIDATE_REGEXP, [
-        // At least one (\+) alphabet, number, + / = character.
+        // At least one (+) alphabet, number, + / = character.
         // @see https://www.rfc-editor.org/rfc/rfc4648#page-6
-        'options' => ['regexp' => '/^[[:alnum:]+\/=]\+$/'],
+        'options' => ['regexp' => '/^[[:alnum:]\+\/=]+$/'],
     ]);
 }
