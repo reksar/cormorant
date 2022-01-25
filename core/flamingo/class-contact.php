@@ -11,6 +11,9 @@ use \flamingo\contact\token as token;
  */
 class Contact implements \Contact
 {
+    const TAG_TAXONOMY = \Flamingo_Contact::contact_tag_taxonomy;
+    const TAG_CONFIRMED = 'confirmed';
+
     private \Flamingo_Contact $contact;
 
     public function __construct(\Flamingo_Contact $contact)
@@ -34,12 +37,23 @@ class Contact implements \Contact
         return token\from_contact($this);
     }
 
+    public function tag_names(): array
+    {
+		$tags = wp_get_post_terms($this->id(), self::TAG_TAXONOMY);
+        return array_map(function($tag) {return $tag->name;}, $tags);
+    }
+
     public function is_confirmed(): bool
     {
-        return false;
+        return in_array(self::TAG_CONFIRMED, $this->tag_names());
     }
 
     public function confirm()
     {
+        wp_set_post_terms(
+            $this->id(),
+            self::TAG_CONFIRMED,
+            self::TAG_TAXONOMY,
+            true);
     }
 }
