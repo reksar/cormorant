@@ -21,7 +21,8 @@ class Confirm_Contact_Email
         try
         {
             contact\by_token(self::token())->confirm();
-            // TODO: redirect to OK page
+            // TODO: add WP setting
+            self::redirect('confirmation_ok');
         }
         catch (
             \err\No_Contact |
@@ -29,7 +30,8 @@ class Confirm_Contact_Email
             \err\Bad_Token $err)
         {
             error_log($err->getMessage());
-            // TODO: redirect to ERR page
+            // TODO: add WP setting
+            self::redirect('confirmation_err');
         }
     }
 
@@ -44,5 +46,12 @@ class Confirm_Contact_Email
         if (! $token) throw new \err\Bad_Token($_GET[$token_name]);
 
         return $token;
+    }
+
+    private static function redirect(string $alias)
+    {
+        $page = get_page_by_path($alias);
+        $url = ($page && $page->ID) ? get_permalink($page->ID) : home_url();
+        wp_redirect($url, 301);
     }
 }
