@@ -1,8 +1,21 @@
 <?php namespace settings;
 
 require_once 'scheme.php';
-require_once 'class-sanitizer.php';
+require_once 'sanitize.php';
 use settings;
+
+require_once 'view/settings.php';
+
+// Each section requires the file `view/section/{section_name}.php`
+foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
+    require_once $section_view;
+
+// Each field requires the file `view/field/{field_name}.php`
+foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
+    require_once $field_view;
+// and the file `sanitize/{field_name}.php`
+foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
+    require_once $sanitizer;
 
 function init()
 {
@@ -13,7 +26,7 @@ function init()
 function add()
 {
     register_setting(GROUP, NAME, [
-        'sanitize_callback' => new settings\Sanitizer(),
+        'sanitize_callback' => 'settings\sanitize_all',
     ]);
 
     foreach (SECTIONS as $section) {

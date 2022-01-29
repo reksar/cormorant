@@ -1,17 +1,5 @@
 <?php namespace settings;
 
-require_once 'view/settings.php';
-
-// Each section requires the file `view/section/{section_name}.php`
-foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
-    require_once $section_view;
-
-// Each field requires the file `view/field/{field_name}.php`
-foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
-    require_once $field_view;
-// and the file `sanitize/{field_name}.php`
-// @see `class-sanitizer.php`
-
 const NAME = 'cormorant_settings';
 const GROUP = 'cormorant_settings_group';
 const MENU_TITLE = 'Cormorant';
