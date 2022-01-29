@@ -2,7 +2,7 @@
 
 require_once 'page_select.php';
 
-foreach (glob(dirname(dirname(__FILE__)) . '/sanitize/*.php') as $sanitizer)
+foreach (glob(dirname(__DIR__) . '/sanitize/*.php') as $sanitizer)
     require_once $sanitizer;
 
 function value($field_name)

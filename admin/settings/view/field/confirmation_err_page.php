@@ -1,6 +1,6 @@
 <?php namespace view;
 
-require_once dirname(dirname(__FILE__)) . '/input/input.php';
+require_once dirname(__DIR__) . '/input/input.php';
 
 function confirmation_err_page()
 {
