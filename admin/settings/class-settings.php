@@ -28,7 +28,7 @@ class Settings
             add_settings_section(...self::args($section));
 
             foreach ($section['fields'] as $field)
-                add_settings_field(...self::args_ext($field, $section));
+                add_settings_field(...self::args($field, $section));
         }
     }
 
@@ -43,25 +43,17 @@ class Settings
     }
 
     /*
-     * Turns the `config` array into the array of positional args for the 
-     * `add_settings_section()`.
+     * Turns the `config` dict into the list of positional args.
      */
-    private static function args($config)
+    private static function args($config, $extra=[])
     {
+        extract($config);
         return [
-            $config['name'],
-            $config['title'],
-            'view\\' . $config['name'],
+            $name,
+            $title,
+            "view\\$name",
             settings\PAGE_SLUG,
+            @$extra['name'],
         ];
-    }
-
-    /*
-     * Turns the two arrays into the one array of positional args for the 
-     * `add_settings_field()`, i.e. appends the extra name to `args()`.
-     */
-    private static function args_ext($config, $extra)
-    {
-        return [...self::args($config), $extra['name']];
     }
 }
