@@ -23,11 +23,13 @@ class Confirmation_Email
 
     public function subject(): string
     {
+        // TODO: WP setting
         return 'Test subject';
     }
 
     private function body(): string
     {
+        // TODO: WP setting
         return 'Confirmation link: ' . $this->confirmation_link();
 	}
 
@@ -41,10 +43,10 @@ class Confirmation_Email
         $action = self::ACTION;
         $token_name = self::TOKEN_URL_PARAM;
         $token = urlencode($this->token);
-        $url_suffix = "admin-post.php?action=$action&$token_name=$token";
+        $url_tail = "admin-post.php?action=$action&$token_name=$token";
 
-        $blog_id = NULL;
-        $url = get_admin_url($blog_id, $url_suffix);
+        $blog_id = NULL; // Current blog
+        $url = get_admin_url($blog_id, $url_tail);
 
         return "<a target=\"_blank\" href=\"$url\">$url</a>";
     }
