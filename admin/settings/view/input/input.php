@@ -1,6 +1,7 @@
 <?php namespace view;
 
 require_once 'page_select.php';
+require_once 'text.php';
 
 function value($field_name)
 {

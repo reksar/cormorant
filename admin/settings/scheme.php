@@ -22,6 +22,10 @@ const SECTIONS = [
                 'name' => 'confirmation_err_page',
                 'title' => 'Confirmation error page',
             ],
+            [
+                'name' => 'email_subject',
+                'title' => 'Confirmation e-mail subject',
+            ],
         ],
     ],
 ];

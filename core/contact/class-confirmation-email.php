@@ -23,8 +23,8 @@ class Confirmation_Email
 
     public function subject(): string
     {
-        // TODO: WP setting
-        return 'Test subject';
+        $settings = get_option('cormorant_settings');
+        return $settings['email_subject'] ?? '';
     }
 
     private function body(): string
