@@ -2,6 +2,7 @@
 
 require_once 'page_select.php';
 require_once 'text.php';
+require_once 'textarea.php';
 
 function value($field_name)
 {

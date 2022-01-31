@@ -6,6 +6,7 @@ class Confirmation_Email
 {
     const ACTION = 'confirm_email';
     const TOKEN_URL_PARAM = 'token';
+    const LINK_SHORTCODE = '[confirmation-link]';
 
     private string $email;
     private string $token;
@@ -29,9 +30,12 @@ class Confirmation_Email
 
     private function body(): string
     {
-        // TODO: WP setting
-        return 'Confirmation link: ' . $this->confirmation_link();
-	}
+        $settings = get_option('cormorant_settings');
+        $template = $settings['email_template'] ?? self::LINK_SHORTCODE;
+        $link = $this->confirmation_link();
+        $link_shortcode = self::LINK_SHORTCODE;
+        return str_replace($link_shortcode, $link, $template);
+    }
 
     public function headers(): string
     {

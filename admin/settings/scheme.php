@@ -26,6 +26,10 @@ const SECTIONS = [
                 'name' => 'email_subject',
                 'title' => 'Confirmation e-mail subject',
             ],
+            [
+                'name' => 'email_template',
+                'title' => 'Confirmation e-mail template',
+            ],
         ],
     ],
 ];
