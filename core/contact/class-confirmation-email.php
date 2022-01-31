@@ -6,6 +6,7 @@ class Confirmation_Email
 {
     const ACTION = 'confirm_email';
     const TOKEN_URL_PARAM = 'token';
+    const LINK_SHORTCODE = '[confirmation-link]';
 
     private string $email;
     private string $token;
@@ -23,13 +24,18 @@ class Confirmation_Email
 
     public function subject(): string
     {
-        return 'Test subject';
+        $settings = get_option('cormorant_settings');
+        return $settings['email_subject'] ?? '';
     }
 
     private function body(): string
     {
-        return 'Confirmation link: ' . $this->confirmation_link();
-	}
+        $settings = get_option('cormorant_settings');
+        $template = $settings['email_template'] ?? self::LINK_SHORTCODE;
+        $link = $this->confirmation_link();
+        $link_shortcode = self::LINK_SHORTCODE;
+        return str_replace($link_shortcode, $link, $template);
+    }
 
     public function headers(): string
     {
@@ -41,10 +47,10 @@ class Confirmation_Email
         $action = self::ACTION;
         $token_name = self::TOKEN_URL_PARAM;
         $token = urlencode($this->token);
-        $url_suffix = "admin-post.php?action=$action&$token_name=$token";
+        $url_tail = "admin-post.php?action=$action&$token_name=$token";
 
-        $blog_id = NULL;
-        $url = get_admin_url($blog_id, $url_suffix);
+        $blog_id = NULL; // Current blog
+        $url = get_admin_url($blog_id, $url_tail);
 
         return "<a target=\"_blank\" href=\"$url\">$url</a>";
     }

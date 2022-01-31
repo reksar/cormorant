@@ -21,8 +21,7 @@ class Confirm_Contact_Email
         try
         {
             contact\by_token(self::token())->confirm();
-            // TODO: add WP setting
-            self::redirect('confirmation_ok');
+            self::redirect('confirmation_page');
         }
         catch (
             \err\No_Contact |
@@ -30,8 +29,7 @@ class Confirm_Contact_Email
             \err\Bad_Token $err)
         {
             error_log($err->getMessage());
-            // TODO: add WP setting
-            self::redirect('confirmation_err');
+            self::redirect('confirmation_err_page');
         }
     }
 
@@ -48,10 +46,12 @@ class Confirm_Contact_Email
         return $token;
     }
 
-    private static function redirect(string $alias)
+    private static function redirect($page_setting_name)
     {
-        $page = get_page_by_path($alias);
-        $url = ($page && $page->ID) ? get_permalink($page->ID) : home_url();
-        wp_redirect($url, 301);
+        $settings = get_option('cormorant_settings');
+        $page_id = absint($settings[$page_setting_name]) ?? 0;
+        $url = $page_id ? get_permalink($page_id) : home_url();
+        $HTTP_STATUS_MOVED_PERMANENTLY = 301;
+        wp_redirect($url, $HTTP_STATUS_MOVED_PERMANENTLY);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+require_once 'settings/settings.php';
 require_once 'notice/class-notice.php';
 
 /**
@@ -7,6 +8,11 @@ require_once 'notice/class-notice.php';
  */
 class Admin
 {
+    public function __construct()
+    {
+        settings\init();
+    }
+
     public function notice($text)
     {
         new Notice($text);
