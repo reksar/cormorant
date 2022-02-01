@@ -1,8 +1,8 @@
 <?php namespace err;
 
-class Different_Token_Id extends \Exception
+class Not_Same_Id extends \Exception
 {
-    public function __construct(string $token_id, string $contact_id)
+    public function __construct($contact_id, $token_id)
     {
         $message = "The Flamingo contact was found with the email from " .
             "token, but the token id $token_id is differs from the original " .

@@ -1,29 +1,26 @@
-<?php namespace flamingo\contact\token;
-
-require_once CORMORANT_DIR . 'core/contact/interface-contact.php';
+<?php namespace contact\token;
 
 const SEPARATOR = ':';
 
-function from_contact(\Contact $contact): string
+function build($contact)
 {
-    $salt = (string) $contact->id();
-    $payload = $contact->email() . SEPARATOR . $salt;
+    $payload = $contact->email() . SEPARATOR . $contact->id();
     return base64_encode($payload);
 }
 
-function email(string $token): string
+function email($token)
 {
     $payload = base64_decode($token);
     return explode(SEPARATOR, $payload)[0];
 }
 
-function id(string $token): int
+function id($token)
 {
     $payload = base64_decode($token);
     return (int) explode(SEPARATOR, $payload)[1];
 }
 
-function filter(string $token): ?string
+function filter($token)
 {
     return filter_var($token, FILTER_VALIDATE_REGEXP, [
         // At least one (+) alphabet, number, + / = character.

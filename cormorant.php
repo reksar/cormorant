@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cormorant
  * Description: Flamingo add-on for email confirmation.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: reksarka
  * Author URI: https://github.com/reksar
  * License: GPL-2.0+
@@ -15,8 +15,9 @@ if (! defined('WPINC')) die;
 define('CORMORANT', plugin_basename(__FILE__));
 define('CORMORANT_DIR', plugin_dir_path(__FILE__));
 
-require_once 'core/class-cormorant.php';
+require_once 'core/cormorant.php';
 
-$cormorant = new Cormorant();
-register_activation_hook(__FILE__, [$cormorant, 'activate']);
-register_deactivation_hook(__FILE__, [$cormorant, 'deactivate']);
+register_activation_hook(__FILE__, 'cormorant\activate');
+register_deactivation_hook(__FILE__, 'cormorant\deactivate');
+
+add_action('init', 'cormorant\init');

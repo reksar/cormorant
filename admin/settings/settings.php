@@ -19,8 +19,8 @@ foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
 
 function init()
 {
-    add_action('admin_init', 'settings\add');
-    add_action('admin_menu', 'settings\show');
+    add_action('admin_init', '\settings\add');
+    add_action('admin_menu', '\settings\show');
 }
 
 function add()
@@ -48,7 +48,7 @@ function show()
 }
 
 /*
- * Turns the `config` dict into the list of positional args.
+ * Turns the config dictionaries into the list of positional args.
  */
 function args($config, $extra=[])
 {

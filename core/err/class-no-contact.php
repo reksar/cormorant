@@ -2,7 +2,7 @@
 
 class No_Contact extends \Exception
 {
-    public function __construct(string $email)
+    public function __construct($email)
     {
         $email = $email ?: 'empty email';
 

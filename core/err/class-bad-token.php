@@ -2,7 +2,7 @@
 
 class Bad_Token extends \Exception
 {
-    public function __construct(?string $token)
+    public function __construct($token)
     {
         $token = $token ?: 'empty token';
 

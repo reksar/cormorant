@@ -1,4 +1,4 @@
-<?php
+<?php namespace admin;
 
 require_once 'view/notice.php';
 
@@ -14,6 +14,6 @@ class Notice
 
     public function __invoke()
     {
-        view\notice($this->text);
+        \view\notice($this->text);
     }
 }
