@@ -1,7 +1,7 @@
 === Cormorant ===
 Tags: Email confirmation, Contact Form 7, Flamingo
 Requires at least: 5.0.0
-Tested up to: 5.7
+Tested up to: 5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -9,19 +9,15 @@ Flamingo add-on for email confirmation.
 
 == Description ==
 
----
+When an user submits a Contact Form 7 and the Flamingo gets an incoming 
+contact, the Cormorant emails to that contact with confirmation link, if that 
+contact is not confirmed yet.
 
-== NOTES ==
+When an user follows the confirmation link, the Cormorant adds the "confirmed" 
+tag to the related Flamingo contact.
 
----
-
-== Installation ==
-
-1. Upload the `/wp-content/plugins/cormorant` directory.
-2. Activate through the "Plugins" menu in WordPress admin panel.
-
----
-
-== Changelog ==
+Requirements:
+https://wordpress.org/plugins/flamingo
+https://wordpress.org/plugins/contact-form-7
 
 ---
