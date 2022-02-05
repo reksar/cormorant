@@ -1,6 +1,9 @@
 <?php
 
+// TODO: remove after the Contact.__construct() refactoring
 require_once WP_PLUGIN_DIR . '/flamingo/includes/class-contact.php';
+
+require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 require_once 'token.php';
 
@@ -9,12 +12,12 @@ require_once 'token.php';
  */
 class Contact
 {
-    const TAG_TAXONOMY = Flamingo_Contact::contact_tag_taxonomy;
     const TAG_CONFIRMED = 'confirmed';
 
     private $id;
     private $email;
 
+    // TODO: refactoring
     public function __construct($raw_email)
     {
         $email = filter_var($raw_email, FILTER_VALIDATE_EMAIL);
@@ -47,23 +50,13 @@ class Contact
         return contact\token\build($this);
     }
 
-    public function tag_names()
-    {
-        $tags = wp_get_post_terms($this->id, self::TAG_TAXONOMY);
-        return array_map(function($tag) {return $tag->name;}, $tags);
-    }
-
     public function is_confirmed()
     {
-        return in_array(self::TAG_CONFIRMED, $this->tag_names());
+        return in_array(self::TAG_CONFIRMED, \flamingo\tag_names($this->id));
     }
 
     public function confirm()
     {
-        wp_set_post_terms(
-            $this->id,
-            self::TAG_CONFIRMED,
-            self::TAG_TAXONOMY,
-            TRUE);
+        \flamingo\add_tag(self::TAG_CONFIRMED, $this->id);
     }
 }
