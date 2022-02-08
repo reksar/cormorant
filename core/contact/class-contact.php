@@ -1,14 +1,12 @@
 <?php
 
-// TODO: remove after the Contact.__construct() refactoring
-require_once WP_PLUGIN_DIR . '/flamingo/includes/class-contact.php';
-
-require_once CORMORANT_DIR . 'core/flamingo.php';
-require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 require_once 'token.php';
+require_once 'confirmation-email.php';
+require_once CORMORANT_DIR . 'core/flamingo.php';
+require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
 
 /*
- * Adapter for the `Flamingo_Contact` from the original Flamingo plugin.
+ * Adapter for the `Flamingo_Contact`.
  */
 class Contact
 {
@@ -17,22 +15,30 @@ class Contact
     private $id;
     private $email;
 
-    // TODO: refactoring
-    public function __construct($raw_email)
+    public static function from_email($email)
     {
-        $email = filter_var($raw_email, FILTER_VALIDATE_EMAIL);
-        // The `Flamingo_Contact::search_by_email()` returns one of existing
-        // contact when we searching with the empty email, so we need to check
-        // this first.
-        if (! $email)
-            throw new \err\No_Contact($raw_email);
+        return new self(\flamingo\contact($email));
+    }
 
-        $contact = Flamingo_Contact::search_by_email($email);
-        if (! $contact)
-            throw new \err\No_Contact($email);
+    public static function from_token($token)
+    {
+        if (! $token)
+            throw new \err\Bad_Token($token);
 
-        $this->id = $contact->id();
-        $this->email = $contact->email;
+        $id = \contact\token\id($token);
+        $email = \contact\token\email($token);
+        $flamingo_contact = \flamingo\contact($email);
+
+        if ($flamingo_contact->id() !== $id)
+            throw new \err\Bad_Token($token);
+
+        return new self($flamingo_contact);
+    }
+
+    public function __construct($flamingo_contact)
+    {
+        $this->id = $flamingo_contact->id();
+        $this->email = $flamingo_contact->email;
     }
 
     public function id()
@@ -47,16 +53,33 @@ class Contact
 
     public function token()
     {
-        return contact\token\build($this);
+        return \contact\token\from_contact($this);
     }
 
     public function is_confirmed()
     {
-        return in_array(self::TAG_CONFIRMED, \flamingo\tag_names($this->id));
+        return in_array(self::TAG_CONFIRMED, $this->tags());
     }
 
     public function confirm()
     {
-        \flamingo\add_tag(self::TAG_CONFIRMED, $this->id);
+        if (! $this->is_confirmed())
+            $this->add_tag(self::TAG_CONFIRMED);
+    }
+
+    public function ask_confirmation()
+    {
+        if (! $this->is_confirmed())
+            \contact\confirmation_email\send($this);
+    }
+
+    public function tags()
+    {
+        return \flamingo\tags($this->id);
+    }
+
+    public function add_tag($tag)
+    {
+        \flamingo\add_tag($tag, $this->id);
     }
 }

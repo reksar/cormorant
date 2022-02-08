@@ -1,14 +1,13 @@
 <?php namespace action\ask_confirmation;
 
 require_once CORMORANT_DIR . 'core/contact/class-contact.php';
-require_once CORMORANT_DIR . 'core/contact/confirmation-email.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 
 // This status is telling that Contact Form 7 has been sent normally and 
 // the Flamingo gets valid contact form data.
 const CF7_STATUS_OK = 'mail_sent';
 
-// When the Flamingo gets an incoming contact.
+// When the Flamingo gets an incoming contact from Contact Form 7.
 const ON_CONTACT = 'flamingo_add_inbound';
 
 function init()
@@ -37,7 +36,7 @@ function run(array $form_data): array
 
     try
     {
-        send_email_to_contact($form_data);
+        \Contact::from_email(email($form_data))->ask_confirmation();
     }
     catch (\err\No_Contact $err)
     {
@@ -49,10 +48,7 @@ function run(array $form_data): array
     }
 }
 
-function send_email_to_contact($form_data)
+function email($form_data)
 {
-    $email = $form_data['from_email'] ?? '';
-    $contact = new \Contact($email);
-    if (! $contact->is_confirmed())
-        \contact\confirmation_email\send($contact);
+    return filter_var($form_data['from_email'], FILTER_VALIDATE_EMAIL);
 }
