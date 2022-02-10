@@ -47,12 +47,12 @@ function find_messages($email)
 
 function add_tag($tag_name, $contact_id)
 {
-    wp_set_post_terms($contact_id, $tag_name, TAG_TAXONOMY, TRUE);
+    wp_set_object_terms($contact_id, $tag_name, TAG_TAXONOMY, TRUE);
 }
 
 function tags($contact_id)
 {
-    $tags = wp_get_post_terms($contact_id, TAG_TAXONOMY);
+    $tags = wp_get_object_terms($contact_id, TAG_TAXONOMY);
 
     return array_map(
 
