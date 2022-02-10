@@ -10,12 +10,14 @@ function from_contact($contact)
     return base64_encode($payload);
 }
 
+// TODO: validate
 function email($token)
 {
     $payload = base64_decode($token);
     return explode(SEPARATOR, $payload)[0];
 }
 
+// TODO: validate
 function id($token)
 {
     $payload = base64_decode($token);

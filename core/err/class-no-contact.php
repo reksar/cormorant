@@ -10,4 +10,4 @@ class No_Contact extends \Exception
 
         parent::__construct($message);
     }
-} 
+}

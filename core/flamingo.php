@@ -4,6 +4,7 @@
  */
 
 require_once WP_PLUGIN_DIR . '/flamingo/includes/class-contact.php';
+require_once WP_PLUGIN_DIR . '/flamingo/includes/class-inbound-message.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 
 const PLUGIN = 'flamingo/flamingo.php';
@@ -30,9 +31,18 @@ function contact($email)
     return $contact;
 }
 
-function expired_contacts()
+function find_contacts($query_options)
 {
-    return []; // TODO
+    return \Flamingo_Contact::find($query_options);
+}
+
+function find_messages($email)
+{
+    return \Flamingo_Inbound_Message::find([
+        'posts_per_page' => -1,
+        'meta_key' => '_from_email',
+        'meta_value' => $email,
+    ]);
 }
 
 function add_tag($tag_name, $contact_id)
