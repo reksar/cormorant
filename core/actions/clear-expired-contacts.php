@@ -3,7 +3,7 @@
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/contact/class-contact.php';
 
-const DAYS_TO_CONFIRM = 1; // TODO: setting
+const DAYS_TO_CONFIRM = 2; // TODO: setting
 const ON_CRON_DAILY = 'flamingo_daily_cron_job';
 
 function init()
@@ -20,9 +20,12 @@ function run()
         return;
 
     // TODO: wrap with `Contact`
-    $unconfirmed_contacts = \flamingo\find_contacts([
+    $expired_contacts = \flamingo\find_contacts([
         'posts_per_page' => -1,
         'orderby' => 'date',
+        'date_query' => [[
+            'before' => DAYS_TO_CONFIRM . 'days ago',
+        ]],
         'tax_query' => [[
             // Exclude all that has the `confirmed` tag, i.e.
             // exclude objects, ...
@@ -36,9 +39,6 @@ function run()
         ]],
     ]);
 
-    $expired_contacts = array_filter($unconfirmed_contacts,
-        '\action\clear_expired_contacts\is_expired');
-
     array_walk($expired_contacts,
         '\action\clear_expired_contacts\delete_contact');
 }
@@ -47,15 +47,6 @@ function delete_contact($contact)
 {
     delete_related_messages($contact);
     $contact->delete();
-}
-
-// FIXME: last_contacted - is a bad idea.
-function is_expired($contact)
-{
-    $current_date = new \DateTime();
-    $contact_date = new \DateTime($contact->last_contacted);
-    $contact_age = date_diff($current_date, $contact_date)->days;
-    return DAYS_TO_CONFIRM < $contact_age;
 }
 
 // TODO: message wrapper
