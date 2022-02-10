@@ -15,6 +15,12 @@ function is_active()
     return in_array(PLUGIN, get_option('active_plugins'));
 }
 
+function init()
+{
+    // TODO: check if already registered.
+    \Flamingo_Contact::register_post_type();
+}
+
 function contact($email)
 {
     // The `Flamingo_Contact::search_by_email()` returns one of existing

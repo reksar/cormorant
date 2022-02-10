@@ -11,6 +11,7 @@ require_once 'actions/actions.php';
 function init()
 {
     if (\flamingo\is_active()) {
+        \flamingo\init();
         \settings\init();
         \actions\init();
     }

@@ -19,16 +19,26 @@ function run()
     if (! $days_to_confirm)
         return;
 
-    // TODO: optimize WP_Query
     // TODO: wrap with `Contact`
-    $all_contacts = \flamingo\find_contacts([
+    $unconfirmed_contacts = \flamingo\find_contacts([
         'posts_per_page' => -1,
         'orderby' => 'date',
+        'tax_query' => [[
+            // Exclude all that has the `confirmed` tag, i.e.
+            // exclude objects, ...
+            'operator' => 'NOT IN',
+            // with the taxonomy ...
+            'taxonomy' => \flamingo\TAG_TAXONOMY,
+            // and the field ...
+            'field' => 'name',
+            // that equals to
+            'terms' => \Contact::TAG_CONFIRMED,
+        ]],
     ]);
-    $unconfirmed_contacts = array_filter($all_contacts,
-        '\action\clear_expired_contacts\is_unconfirmed');
+
     $expired_contacts = array_filter($unconfirmed_contacts,
         '\action\clear_expired_contacts\is_expired');
+
     array_walk($expired_contacts,
         '\action\clear_expired_contacts\delete_contact');
 }
@@ -37,13 +47,6 @@ function delete_contact($contact)
 {
     delete_related_messages($contact);
     $contact->delete();
-}
-
-// TODO: wrap with `Contact`
-// FIXME: Contact tags are empty, so all contacts are considered as unconfirmed.
-function is_unconfirmed($contact)
-{
-    return ! in_array(\Contact::TAG_CONFIRMED, $contact->tags);
 }
 
 // FIXME: last_contacted - is a bad idea.
