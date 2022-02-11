@@ -1,4 +1,5 @@
 <?php namespace actions;
+// TODO: automatize.
 
 require_once 'ask-confirmation.php';
 require_once 'get-confirmation.php';

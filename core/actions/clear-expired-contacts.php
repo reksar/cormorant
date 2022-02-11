@@ -3,7 +3,6 @@
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/contact/class-contact.php';
 
-const DAYS_TO_CONFIRM = 2; // TODO: setting
 const ON_CRON_DAILY = 'flamingo_daily_cron_job';
 
 function init()
@@ -13,18 +12,17 @@ function init()
 
 function run()
 {
-    $days_to_confirm = DAYS_TO_CONFIRM;
+    $settings = get_option('cormorant_settings');
+    $days_to_confirm = $settings['days_to_confirm'];
 
-    // FIXME: unreachable
     if (! $days_to_confirm)
         return;
 
     // TODO: wrap with `Contact`
     $expired_contacts = \flamingo\find_contacts([
         'posts_per_page' => -1,
-        'orderby' => 'date',
         'date_query' => [[
-            'before' => DAYS_TO_CONFIRM . 'days ago',
+            'before' => "$days_to_confirm days ago",
         ]],
         'tax_query' => [[
             // Exclude all that has the `confirmed` tag, i.e.
