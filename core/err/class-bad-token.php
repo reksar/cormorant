@@ -6,7 +6,7 @@ class Bad_Token extends \Exception
     {
         $token = $token ?: 'empty token';
 
-        $message = "Bad email confirmation token: $token";
+        $message = "[Cormorant] Bad contact confirmation token: $token";
 
         parent::__construct($message);
     }

@@ -10,6 +10,7 @@ const SECTIONS = [
         'name' => 'cormorant_main_settings_section',
         'title' => 'E-mail confirmation',
         'fields' => [
+            // TODO: default values
             [
                 // User will be redirected to this page after following the 
                 // valid confirmation link.
@@ -29,6 +30,14 @@ const SECTIONS = [
             [
                 'name' => 'email_template',
                 'title' => 'Confirmation e-mail template',
+            ],
+            [
+                // Flamingo contacts and related messages will be deleted if
+                // they are not confirmed within this time.
+                // Set to 0 to prevent automatic contacts cleaning.
+                'name' => 'days_to_confirm',
+                'title' => 'Days to confirm a contact',
+                // TODO: min, max
             ],
         ],
     ],

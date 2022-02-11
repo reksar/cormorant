@@ -4,7 +4,6 @@ require_once CORMORANT_DIR . 'core/contact/class-contact.php';
 require_once CORMORANT_DIR . 'core/contact/token.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
-require_once CORMORANT_DIR . 'core/err/class-not-same-id.php';
 
 const HTTP_STATUS_MOVED_PERMANENTLY = 301;
 const TOKEN_URL_PARAM = 'token';
@@ -24,44 +23,27 @@ function init()
 }
 
 /*
- * Extracts the token from GET request params, builds related `Contact` and
- * confirms it. Then redirects an user in corresponding to process status.
+ * Confirms a `Contact` with the token extracted from GET request.
+ * Then redirects an user in corresponding to process status.
  */
 function run()
 {
     try
     {
-        confirm_contact();
+        \Contact::from_token(token())->confirm();
         redirect('confirmation_page');
     }
-    catch (\err\Bad_Token | \err\No_Contact | \err\Not_Same_Id $err)
+    catch (\err\Bad_Token | \err\No_Contact $err)
     {
         error_log($err->getMessage());
         redirect('confirmation_err_page');
     }
 }
 
-function confirm_contact()
-{
-    $token = token();
-    if (! $token)
-        throw new \err\Bad_Token($_GET[$token_name]);
-
-    $email = \contact\token\email($token);
-    $contact = new \Contact($email);
-
-    $token_id = \contact\token\id($token);
-    $contact_id = $contact->id();
-    if ($token_id !== $contact_id)
-        throw new \err\Not_Same_Id($contact_id, $token_id);
-
-    $contact->confirm();
-}
-
 function token()
 {
     return filter_input(INPUT_GET, TOKEN_URL_PARAM, FILTER_CALLBACK, [
-        // Will pass urldecoded value to filter.
+        // Will pass urldecoded value to the filter.
         'options' => '\contact\token\filter',
     ]);
 }

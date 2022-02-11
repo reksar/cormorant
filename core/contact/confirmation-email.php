@@ -12,6 +12,7 @@ function send($contact)
     $body = body($contact->token());
     $settings = get_option('cormorant_settings');
     $subject = $settings['email_subject'];
+    // TODO: check status
     wp_mail($email, $subject, $body, HEADERS);
 }
 

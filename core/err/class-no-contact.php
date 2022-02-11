@@ -6,10 +6,8 @@ class No_Contact extends \Exception
     {
         $email = $email ?: 'empty email';
 
-        $message = "Flamingo can't find a contact with the $email. Probably " .
-            "form has been submitted correctly, but some errors happens " .
-            "later.";
+        $message = "[Cormorant] Can't find a Flamingo contact by the $email.";
 
         parent::__construct($message);
     }
-} 
+}
