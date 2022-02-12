@@ -1,6 +1,6 @@
 <?php namespace flamingo;
 /*
- * Adapter for the original Flamingo plugin.
+ * Facade for the original Flamingo plugin.
  */
 
 require_once WP_PLUGIN_DIR . '/flamingo/includes/class-contact.php';
@@ -42,29 +42,11 @@ function find_contacts($query_options)
     return \Flamingo_Contact::find($query_options);
 }
 
-function find_messages($email)
+function find_messages_from($email)
 {
     return \Flamingo_Inbound_Message::find([
         'posts_per_page' => -1,
         'meta_key' => '_from_email',
         'meta_value' => $email,
     ]);
-}
-
-function add_tag($tag_name, $contact_id)
-{
-    wp_set_object_terms($contact_id, $tag_name, TAG_TAXONOMY, TRUE);
-}
-
-function tags($contact_id)
-{
-    $tags = wp_get_object_terms($contact_id, TAG_TAXONOMY);
-
-    return array_map(
-
-        function($tag) {
-            return $tag->name;
-        },
-
-        $tags);
 }

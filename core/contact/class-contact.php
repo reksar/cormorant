@@ -12,14 +12,15 @@ class Contact
 {
     const TAG_CONFIRMED = 'confirmed';
 
-    private $id;
-    private $email;
+    private $flamingo_contact;
 
+    // TODO: move
     public static function from_email($email)
     {
         return new self(\flamingo\contact($email));
     }
 
+    // TODO: move
     public static function from_token($token)
     {
         if (! $token)
@@ -37,18 +38,17 @@ class Contact
 
     public function __construct($flamingo_contact)
     {
-        $this->id = $flamingo_contact->id();
-        $this->email = $flamingo_contact->email;
+        $this->flamingo_contact = $flamingo_contact;
     }
 
     public function id()
     {
-        return $this->id;
+        return $this->flamingo_contact->id();
     }
 
     public function email()
     {
-        return $this->email;
+        return $this->flamingo_contact->email;
     }
 
     public function token()
@@ -75,11 +75,23 @@ class Contact
 
     public function tags()
     {
-        return \flamingo\tags($this->id);
+        return $this->flamingo_contact->tags;
     }
 
     public function add_tag($tag)
     {
-        \flamingo\add_tag($tag, $this->id);
+        $this->flamingo_contact->tags[] = $tag;
+        $this->flamingo_contact->save();
+    }
+
+    public function delete()
+    {
+        $this->flamingo_contact->delete();
+    }
+
+    public function delete_related_messages()
+    {
+        foreach (\flamingo\find_messages_from($this->email()) as $message)
+            $message->delete();
     }
 }
