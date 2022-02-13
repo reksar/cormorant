@@ -1,10 +1,37 @@
 <?php namespace contact;
 /*
- * Entry point to interact with high-level contacts features.
- * Interlayer between the Cormorant actions and the Flamingo facade.
+ * The `Contact` factory. Instatiates the `Contact` class instances.
+ * It is the interlayer between the Cormorant actions and the Flamingo facade.
  */
 
+require_once 'class-contact.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
+require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
+
+function wrap($flamingo_contact)
+{
+    return new \Contact($flamingo_contact);
+}
+
+function by_email($email)
+{
+    return wrap(\flamingo\contact($email));
+}
+
+function by_token($token)
+{
+    if (! $token)
+        throw new \err\Bad_Token($token);
+
+    $id = \contact\token\id($token);
+    $email = \contact\token\email($token);
+    $flamingo_contact = \flamingo\contact($email);
+
+    if ($flamingo_contact->id() !== $id)
+        throw new \err\Bad_Token($token);
+
+    return wrap($flamingo_contact);
+}
 
 function find_unconfirmed_in($days)
 {
@@ -27,9 +54,4 @@ function find_unconfirmed_in($days)
     ]);
 
     return array_map('\contact\wrap', $expired_contacts);
-}
-
-function wrap($flamingo_contact)
-{
-    return new \Contact($flamingo_contact);
 }

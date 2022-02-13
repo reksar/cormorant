@@ -1,6 +1,6 @@
 <?php namespace action\get_confirmation;
 
-require_once CORMORANT_DIR . 'core/contact/class-contact.php';
+require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/contact/token.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
@@ -30,7 +30,7 @@ function run()
 {
     try
     {
-        \Contact::from_token(token())->confirm();
+        \contact\by_token(token())->confirm();
         redirect('confirmation_page');
     }
     catch (\err\Bad_Token | \err\No_Contact $err)

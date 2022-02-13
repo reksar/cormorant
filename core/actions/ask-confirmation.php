@@ -1,6 +1,6 @@
 <?php namespace action\ask_confirmation;
 
-require_once CORMORANT_DIR . 'core/contact/class-contact.php';
+require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 
 // This status is telling that Contact Form 7 has been sent normally and 
@@ -36,7 +36,7 @@ function run(array $form_data): array
 
     try
     {
-        \Contact::from_email(email($form_data))->ask_confirmation();
+        \contact\by_email(email($form_data))->ask_confirmation();
     }
     catch (\err\No_Contact $err)
     {
