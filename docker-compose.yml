@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  wordpress:
+    container_name: cormorant_wp
+    image: wordpress:5-php7.4-apache
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wp_db
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: admin
+    ports:
+      - 8080:80
+    volumes:
+      - wp:/var/www/html
+
+  mysql:
+    container_name: cormorant_db
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: wp_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  wp:
+  db:
