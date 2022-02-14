@@ -1,11 +1,26 @@
-version: '3'
+# TODO: read .env
+version: '3.9'
 
 services:
+
+  mysql:
+    container_name: cormorant_db
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: wp_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db_data:/var/lib/mysql
+    # MYSQL 8 needs this for proper auth the `wordpress_cli`.
+    command: --default-authentication-plugin=mysql_native_password
 
   wordpress:
     container_name: cormorant_wp
     image: wordpress:5-php7.4-apache
-    restart: always
+    ports:
+      - 127.0.0.1:8000:80
     depends_on:
       - mysql
     environment:
@@ -13,23 +28,27 @@ services:
       WORDPRESS_DB_NAME: wp_db
       WORDPRESS_DB_USER: admin
       WORDPRESS_DB_PASSWORD: admin
-    ports:
-      - 8080:80
     volumes:
-      - wp:/var/www/html
+      - wp_data:/var/www/html
 
-  mysql:
-    container_name: cormorant_db
-    image: mysql:8
-    restart: always
+  # Entry point to Wordpress configuration.
+  wordpress_cli:
+    container_name: cormorant_wp_cli
+    image: wordpress:cli
+    depends_on:
+      - mysql
+      - wordpress
+    user: xfs
     environment:
-      MYSQL_DATABASE: wp_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wp_db
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: admin
     volumes:
-      - db:/var/lib/mysql
+      - wp_data:/var/www/html/
+      - ./wp-config.sh:/opt/wp-config.sh
+    command: bash /opt/wp-config.sh
 
 volumes:
-  wp:
-  db:
+  wp_data:
+  db_data:
