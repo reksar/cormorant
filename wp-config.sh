@@ -28,10 +28,11 @@ then
 fi
 
 
-# Configure Wordpress...
+# Configure Wordpress.
 
 if ! wp core is-installed
 then
+  # TODO: use .env
   wp core install \
     --url="http://127.0.0.1:8000" \
     --title="Cormorant test" \
