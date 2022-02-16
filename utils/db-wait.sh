@@ -26,28 +26,3 @@ then
   echo Unable to connect to database.
   exit 1
 fi
-
-
-# Configure Wordpress.
-
-if ! wp core is-installed
-then
-  # TODO: use .env
-  wp core install \
-    --url="http://127.0.0.1:8000" \
-    --title="Cormorant test" \
-    --admin_user="admin" \
-    --admin_password="admin" \
-    --admin_email="admin@email.com"
-
-  wp plugin install contact-form-7 --activate
-  wp plugin install flamingo --activate
-fi
-
-if [ $? -ne 0 ]
-then
-  echo Unable to configure Wordpress.
-  exit 2
-fi
-
-echo Wordpress is ready.

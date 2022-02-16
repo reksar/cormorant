@@ -6,9 +6,9 @@ services:
     container_name: cormorant_db
     image: mysql:8
     environment:
-      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
-      MYSQL_USER: ${WORDPRESS_DB_USER}
-      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MYSQL_DATABASE: $WORDPRESS_DB_NAME
+      MYSQL_USER: $WORDPRESS_DB_USER
+      MYSQL_PASSWORD: $WORDPRESS_DB_PASSWORD
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     env_file:
       - ./.env
@@ -17,12 +17,15 @@ services:
     # MYSQL 8 needs this for proper auth the `wordpress_cli`.
     command: --default-authentication-plugin=mysql_native_password
 
+  # WP core, WP test lib, Cormorant plugin
   wordpress:
     container_name: cormorant_wp
     build:
       context: .
       args:
-        WORDPRESS_VERSION: ${WORDPRESS_VERSION}
+        WP_VERSION: $WP_VERSION
+        WP_CORE_DIR: $WP_CORE_DIR
+        WP_TESTS_DIR: $WP_TESTS_DIR
     depends_on:
       - mysql
     ports:
@@ -30,11 +33,12 @@ services:
     env_file:
       - ./.env
     volumes:
-      - wp_data:/var/www/html
+      - wp_data:$WP_CORE_DIR
+      - wp_testlib:$WP_TESTS_DIR
       - ./cormorant:/var/www/html/wp-content/plugins/cormorant
-
-  # Entry point to Wordpress configuration.
-  wordpress_cli:
+  
+  # WP CLI for Wordpress configuration
+  wp_cli:
     container_name: cormorant_wp_cli
     image: wordpress:cli
     depends_on:
@@ -44,10 +48,28 @@ services:
     env_file:
       - ./.env
     volumes:
-      - wp_data:/var/www/html/
-      - ./wp-config.sh:/opt/wp-config.sh
-    command: bash /opt/wp-config.sh
+      - wp_data:$WP_CORE_DIR
+      - ./utils/:/opt/utils/
+    command: /opt/utils/wp-config.sh
+
+  # PHP Composer, PHPUnit, Cormorant tests
+  # TODO:
+  test:
+    container_name: cormorant_test
+    image: composer:latest
+    depends_on:
+      - wordpress
+    env_file:
+      - ./.env
+    volumes:
+      - wp_data:$WP_CORE_DIR
+      - wp_testlib:$WP_TESTS_DIR
+      - ./composer:/app
+      - ./utils/:/opt/utils/
+    command: bash
+    tty: true
 
 volumes:
-  wp_data:
   db_data:
+  wp_data:
+  wp_testlib:
