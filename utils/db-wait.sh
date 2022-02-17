@@ -11,17 +11,17 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v3/#depends_on
 # https://docs.docker.com/compose/startup-order/
 
-# Wait up to 60 seconds
-MAX_RETRIES=30
-INTERVAL=2  # seconds
-retries=0
-while ! wp db check --quiet && [ $retries -lt $MAX_RETRIES ]
+# Check DB connection every...
+INTERVAL=2  # seconds...
+# up to
+attempts=30
+while ! wp db check --quiet && [ $attempts -gt 0 ]
 do
-  (( retries++ ))
+  (( attempts-- ))
   sleep $INTERVAL
 done
 
-if [ $retries -ge $MAX_RETRIES ]
+if [ $attempts -le 0 ]
 then
   echo Unable to connect to database.
   exit 1

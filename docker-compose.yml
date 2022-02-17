@@ -35,7 +35,7 @@ services:
     volumes:
       - wp_data:$WP_CORE_DIR
       - wp_testlib:$WP_TESTS_DIR
-      - ./cormorant:/var/www/html/wp-content/plugins/cormorant
+      - ./cormorant:/var/www/html/wp-content/plugins/cormorant:ro
   
   # WP CLI for Wordpress configuration
   wp_cli:
@@ -49,11 +49,10 @@ services:
       - ./.env
     volumes:
       - wp_data:$WP_CORE_DIR
-      - ./utils/:/opt/utils/
+      - ./utils:/opt/utils:ro
     command: /opt/utils/wp-config.sh
 
   # PHP Composer, PHPUnit, Cormorant tests
-  # TODO:
   test:
     container_name: cormorant_test
     image: composer:latest
@@ -65,7 +64,8 @@ services:
       - wp_data:$WP_CORE_DIR
       - wp_testlib:$WP_TESTS_DIR
       - ./composer:/app
-      - ./utils/:/opt/utils/
+      - ./tests:/app/tests:ro
+      - ./utils:/opt/utils:ro
     command: bash
     tty: true
 
