@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Used to add the Wordpress test suite into original Wordpress Docker image.
+# Downloads the WP testlib and tests configuration.
 #
 # Reads env vars: WP_VERSION, WP_CORE_DIR, WP_TESTS_DIR.
 #
@@ -11,27 +11,33 @@
 # https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/
 # https://github.com/chriszarate/docker-compose-wordpress/blob/master/bin/install-wp-tests.sh
 #
-# We need just to install the WP test suite without all other shit like a new
-# WP installation and new DB setup. DB creation can be skipped in the original
-# script, but a new WP installation - is not.
+# We need just to install the WP testlib and config without all other shit like
+# a new WP installation and new DB setup. DB creation can be skipped in the
+# original script, but a new WP installation - is not.
 #
-# We use the same DB for dev and tests, but table prefixes are different.
+# Used the same DB for dev and tests, but table prefixes are different.
 # Default test prefix is `wptests_`. For example, see:
 # https://develop.svn.wordpress.org/tags/5.9/wp-tests-config-sample.php
 
-# Fetch WP test lib.
+WP_TESTS_DATA=$WP_TESTS_DIR/data
+WP_TESTS_INCLUDES=$WP_TESTS_DIR/includes
+WP_TESTS_CONFIG=$WP_TESTS_DIR/wp-tests-config.php
+
+# TODO: check the WP_VERSION of an existing testlib.
+if [ -d $WP_TESTS_DATA ] && [ -d $WP_TESTS_INCLUDES ] && [ -f WP_TESTS_CONFIG ]
+then
+  exit
+fi
+
+echo Downloading the WP testlib
 WP_URL=https://develop.svn.wordpress.org/tags/$WP_VERSION
 mkdir -p $WP_TESTS_DIR
-svn co --quiet $WP_URL/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-svn co --quiet $WP_URL/tests/phpunit/data/ $WP_TESTS_DIR/data
+svn co --quiet $WP_URL/tests/phpunit/data/ $WP_TESTS_DATA
+svn co --quiet $WP_URL/tests/phpunit/includes/ $WP_TESTS_INCLUDES
 
-# WP tests config...
+echo Configuring the WP testlib
 
-# fetch
-WP_TESTS_CONFIG=$WP_TESTS_DIR/wp-tests-config.php
 curl -s $WP_URL/wp-tests-config-sample.php > $WP_TESTS_CONFIG
-
-# edit
 
 sed -i "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" $WP_TESTS_CONFIG
 

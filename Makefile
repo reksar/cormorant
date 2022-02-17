@@ -1,12 +1,12 @@
 .PHONY: up
 up:
 	docker-compose up -d
-	docker-compose logs -f wp_cli
-	docker-compose exec test /opt/utils/composer.sh
+	docker-compose logs -f wp-cli
+	docker-compose exec test /opt/utils/init.sh
 
 .PHONY: test
 test:
-	docker-compose exec test /opt/utils/wp-test.sh
+	docker-compose exec test /opt/utils/test.sh
 
 .PHONY: stop
 stop:
@@ -18,8 +18,7 @@ down:
 
 .PHONY: clean
 clean: down
-	docker volume rm cormorant_db_data
-	docker volume rm cormorant_wp_data
-	docker volume rm cormorant_wp_testlib
-	rm -rf composer
+	- docker volume rm cormorant_db_data
+	- docker volume rm cormorant_wp_data
+	rm -rf tmp
 	# TODO: remove images optionally

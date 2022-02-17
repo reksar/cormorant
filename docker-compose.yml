@@ -11,34 +11,28 @@ services:
       MYSQL_PASSWORD: $WORDPRESS_DB_PASSWORD
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     env_file:
-      - ./.env
+      - .env
     volumes:
       - db_data:/var/lib/mysql
     # MYSQL 8 needs this for proper auth the `wordpress_cli`.
     command: --default-authentication-plugin=mysql_native_password
 
-  # WP core, WP test lib, Cormorant plugin
   wordpress:
     container_name: cormorant_wp
-    build:
-      context: .
-      args:
-        WP_VERSION: $WP_VERSION
-        WP_CORE_DIR: $WP_CORE_DIR
-        WP_TESTS_DIR: $WP_TESTS_DIR
+    image: wordpress:$WP_VERSION-apache
     depends_on:
       - mysql
     ports:
       - 127.0.0.1:8000:80
     env_file:
-      - ./.env
+      - .env
     volumes:
       - wp_data:$WP_CORE_DIR
-      - wp_testlib:$WP_TESTS_DIR
       - ./cormorant:/var/www/html/wp-content/plugins/cormorant:ro
   
   # WP CLI for Wordpress configuration
-  wp_cli:
+  # Runs the `wp-config.sh` on startup.
+  wp-cli:
     container_name: cormorant_wp_cli
     image: wordpress:cli
     depends_on:
@@ -46,30 +40,29 @@ services:
       - wordpress
     user: xfs
     env_file:
-      - ./.env
+      - .env
     volumes:
       - wp_data:$WP_CORE_DIR
-      - ./utils:/opt/utils:ro
+      - ./utils/wp-cli:/opt/utils:ro
     command: /opt/utils/wp-config.sh
 
-  # PHP Composer, PHPUnit, Cormorant tests
+  # PHP Composer, PHPUnit, WP testlib, Cormorant tests
   test:
     container_name: cormorant_test
     image: composer:latest
     depends_on:
       - wordpress
     env_file:
-      - ./.env
+      - .env
     volumes:
+      - ./tmp/composer:/app
+      - ./tmp/testlib:$WP_TESTS_DIR
       - wp_data:$WP_CORE_DIR
-      - wp_testlib:$WP_TESTS_DIR
-      - ./composer:/app
-      - ./tests:/app/tests:ro
-      - ./utils:/opt/utils:ro
+      - ./tests:/var/lib/wordpress/cormorant-tests:ro
+      - ./utils/test:/opt/utils:ro
     command: bash
     tty: true
 
 volumes:
   db_data:
   wp_data:
-  wp_testlib:
