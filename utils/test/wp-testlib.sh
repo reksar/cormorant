@@ -19,23 +19,26 @@
 # Default test prefix is `wptests_`. For example, see:
 # https://develop.svn.wordpress.org/tags/5.9/wp-tests-config-sample.php
 
-WP_TESTS_DATA=$WP_TESTS_DIR/data
 WP_TESTS_INCLUDES=$WP_TESTS_DIR/includes
+WP_TESTS_DATA=$WP_TESTS_DIR/data
 WP_TESTS_CONFIG=$WP_TESTS_DIR/wp-tests-config.php
 
 # TODO: check the WP_VERSION of an existing testlib.
-if [ -d $WP_TESTS_DATA ] && [ -d $WP_TESTS_INCLUDES ] && [ -f WP_TESTS_CONFIG ]
+if [ -d $WP_TESTS_INCLUDES ] && [ -d $WP_TESTS_DATA ] && [ -f WP_TESTS_CONFIG ]
 then
   exit
 fi
 
-echo Downloading the WP testlib
+printf "Downloading WP testlib... "
 WP_URL=https://develop.svn.wordpress.org/tags/$WP_VERSION
 mkdir -p $WP_TESTS_DIR
-svn co --quiet $WP_URL/tests/phpunit/data/ $WP_TESTS_DATA
+printf "includes... "
 svn co --quiet $WP_URL/tests/phpunit/includes/ $WP_TESTS_INCLUDES
+printf "data... "
+svn co --quiet $WP_URL/tests/phpunit/data/ $WP_TESTS_DATA
+printf "\n"
 
-echo Configuring the WP testlib
+printf "Configuring WP testlib"
 
 curl -s $WP_URL/wp-tests-config-sample.php > $WP_TESTS_CONFIG
 
@@ -52,3 +55,5 @@ sed -i "s/'yourpasswordhere'/$DB_PASS/" $WP_TESTS_CONFIG
 
 DB_HOST="getenv_docker('WORDPRESS_DB_HOST', 'mysql')"
 sed -i "s|'localhost'|${DB_HOST}|" $WP_TESTS_CONFIG
+
+printf "\n"
