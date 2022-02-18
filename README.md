@@ -9,8 +9,8 @@ See `cormorant/README.txt` for more info about the plugin.
 See `.env` file for settings.
 
 `make up` and wait while WP CLI configures the Wordpress and PHP Composer 
-installs the PHPUnit. Don't worry about some DB errors from WP CLI at the 
-beginning, because it waits for DB to be ready.
+installs required test suite. Don't worry about some DB errors from WP CLI at 
+the beginning: it waits for DB to be ready, see `utils/wp-cli/db-wait.sh`.
 
 After the WP CLI tells that "Wordpress is ready on http://127.0.0.1:8000", 
 you can access it. After the PHP Composer is done, you can `make test`.
@@ -21,4 +21,4 @@ you can access it. After the PHP Composer is done, you can `make test`.
 
 `make down` - stop services and remove containers.
 
-`make clean` - down services, then remove volumes and `composer` dir.
+`make clean` - down services, then remove volumes and `tmp` dir.
