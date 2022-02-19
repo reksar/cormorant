@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+
+  mysql:
+    container_name: db
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: $WORDPRESS_DB_NAME
+      MYSQL_USER: $WORDPRESS_DB_USER
+      MYSQL_PASSWORD: $WORDPRESS_DB_PASSWORD
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    # MYSQL 8 needs this for proper auth the `wordpress_cli`.
+    command: --default-authentication-plugin=mysql_native_password
+
+  wp:
+    container_name: wp
+    image: wordpress:$WP_VERSION-apache
+    depends_on:
+      - $WORDPRESS_DB_HOST
+    ports:
+      - 127.0.0.1:8000:80
+    env_file:
+      - .env
+    volumes:
+      - wp_core:$WP_CORE_DIR
+      - ./cormorant:$WP_CORE_DIR/wp-content/plugins/cormorant:ro
+      - ./tests:$TESTS_SUITE_DIR/tests:ro
+      - ./tmp/composer:$TESTS_SUITE_DIR/composer
+      - ./tmp/wp:$TESTS_SUITE_DIR/wp
+      - ./utils/wp:/opt/utils:ro
+  
+  # WP CLI configures the Wordpress.
+  wp-cli:
+    container_name: wp-cli
+    image: wordpress:cli
+    depends_on:
+      - $WORDPRESS_DB_HOST
+      - wp
+    user: xfs
+    env_file:
+      - .env
+    volumes:
+      - wp_core:$WP_CORE_DIR
+      - ./utils/wp-cli:/opt/utils:ro
+    command: /opt/utils/wp-config.sh
+  
+  # PHP Composer installs the tests suite.
+  composer:
+    container_name: composer
+    image: composer:latest
+    depends_on:
+      - wp
+    env_file:
+      - .env
+    volumes:
+      - ./tmp/composer:/app
+      - ./tmp/wp:$TESTS_SUITE_DIR/wp
+      - ./utils/composer:/opt/utils:ro
+    command: /opt/utils/setup.sh
+
+volumes:
+  db_data:
+  wp_core:
