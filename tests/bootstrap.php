@@ -6,6 +6,8 @@
  * @see https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/
  */
 
+require_once __DIR__ . '/const.php';
+
 $_tests_suite_dir = getenv( 'TESTS_SUITE_DIR' );
 $_wp_tests_suite_dir = $_tests_suite_dir . '/wp';
 $_composer_dir = $_tests_suite_dir . '/composer';
