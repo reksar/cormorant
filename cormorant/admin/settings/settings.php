@@ -19,11 +19,11 @@ foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
 
 function init()
 {
-    add_action('admin_init', '\settings\add');
-    add_action('admin_menu', '\settings\show');
+    add_action('admin_init', '\settings\register');
+    add_action('admin_menu', '\settings\add_page');
 }
 
-function add()
+function register()
 {
     register_setting(GROUP, NAME, [
         'sanitize_callback' => 'settings\sanitize_all',
@@ -37,7 +37,7 @@ function add()
     }
 }
 
-function show()
+function add_page()
 {
     add_options_page(
         PAGE_TITLE,
@@ -45,6 +45,42 @@ function show()
         'manage_options',
         PAGE_SLUG,
         'view\settings');
+}
+
+function get($setting_name)
+{
+    $settings = get_option(NAME);
+
+    if (isset($settings[$setting_name])) {
+        $value = $settings[$setting_name];
+        $sanitize = "sanitize\\$setting_name";
+        return $sanitize($value);
+    }
+    else return default_value($setting_name);
+}
+
+function default_value($setting_name)
+{
+    $default = '';
+
+    foreach (all_fields() as $field)
+        if ($field['name'] ==  $setting_name)
+            $default = $field['default'] ?? $default;
+
+    return $default;
+}
+
+/**
+ * @return fields of all settings section.
+ */
+function all_fields()
+{
+    return array_merge(...array_map('\settings\fields', SECTIONS));
+}
+
+function fields($section)
+{
+    return $section['fields'];
 }
 
 /*

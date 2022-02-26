@@ -2,5 +2,5 @@
 
 function confirmation_page($value)
 {
-    return sanitize_text_field($value);
+    return (int) $value;
 }

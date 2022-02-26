@@ -50,8 +50,7 @@ function token()
 
 function redirect($page_setting_name)
 {
-    $settings = get_option('cormorant_settings');
-    $page_id = (int) $settings[$page_setting_name] ?? 0;
+    $page_id = \settings\get($page_setting_name);
     $url = $page_id ? get_permalink($page_id) : home_url();
     wp_redirect($url, HTTP_STATUS_MOVED_PERMANENTLY);
 }
