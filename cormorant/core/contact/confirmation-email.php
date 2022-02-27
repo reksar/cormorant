@@ -10,8 +10,7 @@ function send($contact)
 {
     $email = $contact->email();
     $body = body($contact->token());
-    $settings = get_option('cormorant_settings');
-    $subject = $settings['email_subject'];
+    $subject = \settings\get('email_subject');
     // TODO: check status
     wp_mail($email, $subject, $body, HEADERS);
 }
@@ -19,9 +18,7 @@ function send($contact)
 function body($token)
 {
     $link = confirmation_link($token);
-    $settings = get_option('cormorant_settings');
-    $template = $settings['email_template'] ?? LINK_SHORTCODE;
-    $template = $template ?: LINK_SHORTCODE;
+    $template = \settings\get('email_template') ?: LINK_SHORTCODE;
     return str_replace(LINK_SHORTCODE, $link, $template);
 }
 

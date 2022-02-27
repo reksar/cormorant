@@ -47,16 +47,15 @@ function add_page()
         'view\settings');
 }
 
+/**
+ * @return value of the given setting name.
+ */
 function get($setting_name)
 {
     $settings = get_option(NAME);
-
-    if (isset($settings[$setting_name])) {
-        $value = $settings[$setting_name];
-        $sanitize = "sanitize\\$setting_name";
-        return $sanitize($value);
-    }
-    else return default_value($setting_name);
+    $value = @$settings[$setting_name] ?? default_value($setting_name);
+    $sanitize = "sanitize\\$setting_name";
+    return $sanitize($value);
 }
 
 function default_value($setting_name)
