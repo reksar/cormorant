@@ -38,7 +38,8 @@ const SECTIONS = [
                 // Set to 0 to prevent automatic contacts cleaning.
                 'name' => 'days_to_confirm',
                 'title' => 'Days to confirm a contact',
-                // TODO: min, max
+                'default' => 0,
+                'max' => 365,
             ],
         ],
     ],

@@ -4,8 +4,7 @@ require_once dirname(__DIR__) . '/input/input.php';
 
 function days_to_confirm()
 {
-    // TODO: unite with sanitizer.
-    $max_days = 365;
+    $max_days = \settings\field('days_to_confirm')['max'];
 
     printf(
         '<p>%s</p>',

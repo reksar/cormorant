@@ -11,8 +11,7 @@ function init()
 
 function run()
 {
-    $settings = get_option('cormorant_settings');
-    $days_to_confirm = $settings['days_to_confirm'];
+    $days_to_confirm = \settings\get('days_to_confirm');
 
     if (! $days_to_confirm)
         return;

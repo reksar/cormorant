@@ -50,23 +50,24 @@ function add_page()
 /**
  * @return value of the given setting name.
  */
-function get($setting_name)
+function get($field_name)
 {
     $settings = get_option(NAME);
-    $value = @$settings[$setting_name] ?? default_value($setting_name);
-    $sanitize = "sanitize\\$setting_name";
+    $value = @$settings[$field_name] ?? default_value($field_name);
+    $sanitize = "sanitize\\$field_name";
     return $sanitize($value);
 }
 
-function default_value($setting_name)
+function default_value($field_name)
 {
-    $default = '';
+    return field($field_name)['default'] ?? '';
+}
 
+function field($name)
+{
     foreach (all_fields() as $field)
-        if ($field['name'] ==  $setting_name)
-            $default = $field['default'] ?? $default;
-
-    return $default;
+        if ($field['name'] == $name)
+            return $field;
 }
 
 /**
@@ -74,10 +75,10 @@ function default_value($setting_name)
  */
 function all_fields()
 {
-    return array_merge(...array_map('\settings\fields', SECTIONS));
+    return array_merge(...array_map('\settings\section_fields', SECTIONS));
 }
 
-function fields($section)
+function section_fields($section)
 {
     return $section['fields'];
 }
