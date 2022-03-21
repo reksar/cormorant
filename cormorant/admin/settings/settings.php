@@ -1,21 +1,14 @@
 <?php namespace settings;
+/**
+ * See `scheme.php` if you need to add or edit the Cormorant WP settings.
+ *
+ * Here are the functions to register and put all the parts of the settings
+ * together to make them work.
+ */
 
 require_once 'scheme.php';
 require_once 'sanitize.php';
 use settings;
-
-require_once 'view/settings.php';
-
-// Each section requires the file `view/section/{section_name}.php`
-foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
-    require_once $section_view;
-
-// Each field requires the file `view/field/{field_name}.php`
-foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
-    require_once $field_view;
-// and the file `sanitize/{field_name}.php`
-foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
-    require_once $sanitizer;
 
 function init()
 {

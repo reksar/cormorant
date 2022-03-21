@@ -1,4 +1,9 @@
 <?php namespace actions;
+/**
+ * All PHP files in this dir, except the current file, are considered action
+ * modules. Here we automatically include all actions and call the `init()`
+ * function for each of them.
+ */
 // TODO: automatize.
 
 require_once 'ask-confirmation.php';
