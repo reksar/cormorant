@@ -15,8 +15,8 @@ function days_to_confirm()
         '<p>%s</p>',
         __('Set to 0 if unconfirmed contacts cleanup is not needed.'));
 
-    input('number', __FUNCTION__, [
+    print(input('number', __FUNCTION__, [
         'min' => 0,
         'max' => $max_days,
-    ]);
+    ]));
 }

@@ -9,5 +9,5 @@ function email_template()
         __('Template for the confirmation letter (HTML format is available). 
             Use <b>[confirmation-link]</b> shortcode.'));
 
-    input('textarea', __FUNCTION__);
+    print(input('textarea', __FUNCTION__));
 }

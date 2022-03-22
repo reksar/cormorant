@@ -56,6 +56,9 @@ function default_value($field_name)
     return field($field_name)['default'] ?? '';
 }
 
+/**
+ * @return params of the setting field described in `scheme.php`.
+ */
 function field($name)
 {
     foreach (all_fields() as $field)

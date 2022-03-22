@@ -49,6 +49,10 @@ const SECTIONS = [
                 'title' => 'Confirmation e-mail template',
             ],
             [
+                'name' => 'notify_admin_on_confirmation',
+                'title' => 'Notify admin on a contact confirmation',
+            ],
+            [
                 // Flamingo contacts and related messages will be deleted if
                 // they are not confirmed within this time.
                 // Set to 0 to prevent automatic contacts cleaning.
