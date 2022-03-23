@@ -10,5 +10,5 @@ function confirmation_err_page()
             e-mail is not found in Flamingo records. Probably, contact has 
             been outdated. Home page used by default.'));
 
-    print(input('page_select', __FUNCTION__));
+    print(input(__FUNCTION__));
 }

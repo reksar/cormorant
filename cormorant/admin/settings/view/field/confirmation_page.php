@@ -9,5 +9,5 @@ function confirmation_page()
         __('User will be redirected to this page after confirmation success. 
             Home page used by default.'));
 
-    print(input('page_select', __FUNCTION__));
+    print(input(__FUNCTION__));
 }

@@ -10,6 +10,12 @@ require_once 'scheme.php';
 require_once 'sanitize.php';
 use settings;
 
+const DEFAULT_VALUE = '';
+const TYPE_DEFAULTS = [
+    'number' => 0,
+    'page_select' => 0,
+];
+
 function init()
 {
     add_action('admin_init', '\settings\register');
@@ -53,7 +59,10 @@ function get($field_name)
 
 function default_value($field_name)
 {
-    return field($field_name)['default'] ?? '';
+    $field = field($field_name);
+    $type = $field['input_type'];
+    $default = @$field['options']['default'];
+    return $default ?? @TYPE_DEFAULTS[$type] ?? DEFAULT_VALUE;
 }
 
 /**

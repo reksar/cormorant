@@ -4,7 +4,5 @@ require_once dirname(__DIR__) . '/input/input.php';
 
 function notify_admin_on_confirmation()
 {
-    print(input('checkbox', __FUNCTION__, [
-        'label' => '',
-    ]));
+    print(input(__FUNCTION__));
 }
