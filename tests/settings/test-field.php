@@ -54,7 +54,7 @@ class Test_Settings_Field_Function extends WP_UnitTestCase
         $this->assertArrayHasKey('options', $days_to_confirm);
 
         $options = $days_to_confirm['options'];
-        $this->assertArrayHasKey('default', $options);
+        $this->assertArrayHasKey('min', $options);
         $this->assertArrayHasKey('max', $options);
     }
 }

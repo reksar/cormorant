@@ -75,7 +75,7 @@ const SECTIONS = [
                 'title' => 'Days to confirm a contact',
                 'input_type' => 'number',
                 'options' => [
-                    'default' => 0,
+                    'min' => 0,
                     'max' => 365,
                 ],
             ],
