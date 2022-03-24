@@ -21,6 +21,18 @@ const GROUP = 'cormorant_settings_group';
 const MENU_TITLE = 'Cormorant';
 const PAGE_TITLE = 'Cormorant plugin settings';
 const PAGE_SLUG = 'cormorant-settings';
+
+// Required params for each section:
+//  - name
+//  - title
+//  - fields
+//
+// Required params for each field:
+//  - name
+//  - title
+//  - input_type
+// Optional params, specific to `input_type`, can be described in an `options`
+// nested array.
 const SECTIONS = [
     [
         'name' => 'cormorant_main_settings_section',
