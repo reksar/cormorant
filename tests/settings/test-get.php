@@ -178,3 +178,53 @@ class Test_Email_Template extends WP_UnitTestCase
         $this->assertEquals($this->actual_value(), $str_value);
     }
 }
+
+class Test_Notify_On_Confirmation extends WP_UnitTestCase
+{
+    use Common;
+
+    const NAME = 'notify_admin_on_confirmation';
+    // Not checked checkbox.
+    const DEFAULT_VALUE = 0;
+    // This is the only valid value except the dafult.
+    const CHECKED = 1;
+
+    function test_get_default()
+    {
+        $this->assertEquals($this->actual_value(), self::DEFAULT_VALUE);
+    }
+
+    function test_get_valid_value()
+    {
+        $this->set_value(self::CHECKED);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_positive_int_gives_checked()
+    {
+        $positive_int = 123;
+        $this->set_value($positive_int);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_negative_int_gives_checked()
+    {
+        $negative_int = -123;
+        $this->set_value($negative_int);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_empty_string_gives_default()
+    {
+        $empty_string = '';
+        $this->set_value($empty_string);
+        $this->assertEquals($this->actual_value(), self::DEFAULT_VALUE);
+    }
+
+    function test_not_empty_string_gives_checked()
+    {
+        $not_empty_string = '123';
+        $this->set_value($not_empty_string);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+}

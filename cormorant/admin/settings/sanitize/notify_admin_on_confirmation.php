@@ -2,5 +2,5 @@
 
 function notify_admin_on_confirmation($value)
 {
-    return 1;
+    return (int) (bool) $value;
 }
