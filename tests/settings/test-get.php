@@ -184,10 +184,9 @@ class Test_Notify_On_Confirmation extends WP_UnitTestCase
     use Common;
 
     const NAME = 'notify_admin_on_confirmation';
+
     // Not checked checkbox.
-    const DEFAULT_VALUE = 0;
-    // This is the only valid value except the dafult.
-    const CHECKED = 1;
+    const DEFAULT_VALUE = \settings\TYPE_DEFAULTS['checkbox'];
 
     function test_get_default()
     {
@@ -196,22 +195,22 @@ class Test_Notify_On_Confirmation extends WP_UnitTestCase
 
     function test_get_valid_value()
     {
-        $this->set_value(self::CHECKED);
-        $this->assertEquals($this->actual_value(), self::CHECKED);
+        $this->set_value(\settings\CHECKEDBOX);
+        $this->assertEquals($this->actual_value(), \settings\CHECKEDBOX);
     }
 
     function test_positive_int_gives_checked()
     {
         $positive_int = 123;
         $this->set_value($positive_int);
-        $this->assertEquals($this->actual_value(), self::CHECKED);
+        $this->assertEquals($this->actual_value(), \settings\CHECKEDBOX);
     }
 
     function test_negative_int_gives_checked()
     {
         $negative_int = -123;
         $this->set_value($negative_int);
-        $this->assertEquals($this->actual_value(), self::CHECKED);
+        $this->assertEquals($this->actual_value(), \settings\CHECKEDBOX);
     }
 
     function test_empty_string_gives_default()
@@ -225,6 +224,6 @@ class Test_Notify_On_Confirmation extends WP_UnitTestCase
     {
         $not_empty_string = '123';
         $this->set_value($not_empty_string);
-        $this->assertEquals($this->actual_value(), self::CHECKED);
+        $this->assertEquals($this->actual_value(), \settings\CHECKEDBOX);
     }
 }

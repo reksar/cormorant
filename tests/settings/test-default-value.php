@@ -7,13 +7,19 @@ class Test_Default_Value extends WP_UnitTestCase
         $this->assertEquals('', \settings\default_value('email_subject'));
     }
 
-    function test_for_page_select_is_0()
+    function test_for_checkbox_is_0()
     {
-        $this->assertEquals(0, \settings\default_value('confirmation_page'));
+        $this->assertEquals(0,
+            \settings\default_value('notify_admin_on_confirmation'));
     }
 
     function test_for_number_is_0()
     {
         $this->assertEquals(0, \settings\default_value('days_to_confirm'));
+    }
+
+    function test_for_page_select_is_0()
+    {
+        $this->assertEquals(0, \settings\default_value('confirmation_page'));
     }
 }
