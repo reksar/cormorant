@@ -9,6 +9,9 @@ require_once 'html.php';
  */
 function checkbox($setting_name, bool $setting_value, $options=[])
 {
+    wp_enqueue_script('cormorant-checkbox-js',
+        plugin_dir_url(__FILE__) . 'js/checkbox.js', [], false, true);
+
     $label = $options['label'] ?? '';
 
     $name = \view\html\setting_name($setting_name);
