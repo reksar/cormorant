@@ -7,13 +7,15 @@ require_once 'html.php';
  *   'label' => <string>,
  * ]
  */
-function checkbox($setting_name, $setting_value, $options=[])
+function checkbox($setting_name, bool $setting_value, $options=[])
 {
     $label = $options['label'] ?? '';
 
     $name = \view\html\setting_name($setting_name);
 
+    $checked = $setting_value ? 'checked' : '';
+
     return "<label for=\"$setting_name\">
         <input type=\"checkbox\" id=\"$setting_name\" name=\"$name\"
-        value=\"$setting_value\">$label</label>";
+        value=\"$setting_value\" $checked>$label</label>";
 }

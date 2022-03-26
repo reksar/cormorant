@@ -19,13 +19,10 @@ const DEFAULT_VALUE = '';
 
 // Override the `DEFAULT_VALUE` for a fields with specified `input_type`.
 const TYPE_DEFAULTS = [
-    'checkbox' => 0,
+    'checkbox' => false,
     'number' => 0,
     'page_select' => 0,
 ];
-
-// Value of the checked checkbox.
-const CHECKEDBOX = 1;
 
 function init()
 {

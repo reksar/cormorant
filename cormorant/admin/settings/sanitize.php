@@ -26,6 +26,6 @@ function sanitize_all($raw_settings)
 function preprocess_checkboxes($keys, $settings)
 {
     $checkbox_names = array_intersect(\settings\all_checkbox_names(), $keys);
-    $checkboxes = array_fill_keys($checkbox_names, \settings\CHECKEDBOX);
+    $checkboxes = array_fill_keys($checkbox_names, true);
     return array_replace($settings, $checkboxes);
 }
