@@ -1,7 +1,6 @@
 <?php
 /**
  * PHPUnit bootstrap file
- * 
  * Can be generated with WP CLI: `wp scaffold plugin-tests <plugin>`.
  * @see https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/
  */

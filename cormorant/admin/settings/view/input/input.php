@@ -8,27 +8,25 @@ require_once 'text.php';
 require_once 'textarea.php';
 
 /**
- * Entry point for adding a HTML input into field views.
+ * Returns a HTML input for a settings field based on feild settings
+ * described in the `scheme.php`.
  *
- * @param input_type (string) - one of the templates:
- *   - checkbox
- *   - number
- *   - page_select
- *   - text
- *   - textarea
- *
- * @param view_function (string) - the name of the view function for a
- *   settings field. Use the `__FUNCTION__` magic const.
- *
- * @param options (array) - extra params for an input template.
+ * @param raw_field_name (string) - the name of a settings field or a view
+ *   function name for this field. Usually used `print(input(__FUNCTION__))`
+ *   inside a field view.
  *
  * @return HTML (string) of a field input.
  */
-function input($input_type, $view_function, $options=[])
+function input($raw_field_name)
 {
-    $template = "\\view\\input\\$input_type";
-    $field_name = name($view_function);
+    $field_name = name($raw_field_name);
     $field_value = value($field_name);
+
+    $field_params = \settings\field($field_name);
+    $input_type = $field_params['input_type'];
+    $options = @$field_params['options'];
+
+    $template = "\\view\\input\\$input_type";
     return $template($field_name, $field_value, $options);
 }
 

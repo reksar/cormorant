@@ -8,7 +8,21 @@
 
 require_once 'scheme.php';
 require_once 'sanitize.php';
+
+define('settings\ALL_FIELDS',
+    ...array_merge(array_map('\settings\section_fields', SECTIONS)));
+
 use settings;
+
+// Default value of a settings field.
+const DEFAULT_VALUE = '';
+
+// Override the `DEFAULT_VALUE` for a fields with specified `input_type`.
+const TYPE_DEFAULTS = [
+    'checkbox' => false,
+    'number' => 0,
+    'page_select' => 0,
+];
 
 function init()
 {
@@ -53,25 +67,37 @@ function get($field_name)
 
 function default_value($field_name)
 {
-    return field($field_name)['default'] ?? '';
+    $field = field($field_name);
+    $type = $field['input_type'];
+    $default = @$field['options']['default'];
+    return $default ?? @TYPE_DEFAULTS[$type] ?? DEFAULT_VALUE;
 }
 
 /**
- * @return params of the setting field described in `scheme.php`.
+ * @return params of the setting field with the given `name`.
+ * @see `scheme.php`.
  */
 function field($name)
 {
-    foreach (all_fields() as $field)
-        if ($field['name'] == $name)
+    foreach (ALL_FIELDS as $field)
+        if (field_name($field) == $name)
             return $field;
 }
 
-/**
- * @return fields of all settings section.
- */
-function all_fields()
+function field_name($field)
 {
-    return array_merge(...array_map('\settings\section_fields', SECTIONS));
+    return $field['name'];
+}
+
+function all_checkbox_names()
+{
+    $checkboxes = array_filter(ALL_FIELDS, '\settings\is_checkbox');
+    return array_map('\settings\field_name', $checkboxes);
+}
+
+function is_checkbox($field)
+{
+    return $field['input_type'] == 'checkbox';
 }
 
 function section_fields($section)

@@ -21,6 +21,18 @@ const GROUP = 'cormorant_settings_group';
 const MENU_TITLE = 'Cormorant';
 const PAGE_TITLE = 'Cormorant plugin settings';
 const PAGE_SLUG = 'cormorant-settings';
+
+// Required params for each section:
+//  - name
+//  - title
+//  - fields
+//
+// Required params for each field:
+//  - name
+//  - title
+//  - input_type
+// Optional params, specific to `input_type`, can be described in an `options`
+// nested array.
 const SECTIONS = [
     [
         'name' => 'cormorant_main_settings_section',
@@ -31,26 +43,34 @@ const SECTIONS = [
                 // valid confirmation link.
                 'name' => 'confirmation_page',
                 'title' => 'Confirmation page',
-                'default' => 0, // home page id
+                'input_type' => 'page_select',
             ],
             [
                 // User will be redirected to this page when some errors 
                 // causes during processing the request by confirmation link.
                 'name' => 'confirmation_err_page',
                 'title' => 'Confirmation error page',
-                'default' => 0, // home page id
+                'input_type' => 'page_select',
             ],
             [
                 'name' => 'email_subject',
-                'title' => 'Confirmation e-mail subject',
+                'title' => 'Confirmation email subject',
+                'input_type' => 'text',
             ],
             [
                 'name' => 'email_template',
-                'title' => 'Confirmation e-mail template',
+                'title' => 'Confirmation email template',
+                'input_type' => 'textarea',
             ],
             [
                 'name' => 'notify_admin_on_confirmation',
                 'title' => 'Notify admin on a contact confirmation',
+                'input_type' => 'checkbox',
+            ],
+            [
+                'name' => 'notify_email_template',
+                'title' => 'Notify email template',
+                'input_type' => 'textarea',
             ],
             [
                 // Flamingo contacts and related messages will be deleted if
@@ -58,8 +78,11 @@ const SECTIONS = [
                 // Set to 0 to prevent automatic contacts cleaning.
                 'name' => 'days_to_confirm',
                 'title' => 'Days to confirm a contact',
-                'default' => 0,
-                'max' => 365,
+                'input_type' => 'number',
+                'options' => [
+                    'min' => 0,
+                    'max' => 365,
+                ],
             ],
         ],
     ],
