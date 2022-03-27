@@ -54,18 +54,23 @@ const SECTIONS = [
             ],
             [
                 'name' => 'email_subject',
-                'title' => 'Confirmation e-mail subject',
+                'title' => 'Confirmation email subject',
                 'input_type' => 'text',
             ],
             [
                 'name' => 'email_template',
-                'title' => 'Confirmation e-mail template',
+                'title' => 'Confirmation email template',
                 'input_type' => 'textarea',
             ],
             [
                 'name' => 'notify_admin_on_confirmation',
                 'title' => 'Notify admin on a contact confirmation',
                 'input_type' => 'checkbox',
+            ],
+            [
+                'name' => 'notify_email_template',
+                'title' => 'Notify email template',
+                'input_type' => 'textarea',
             ],
             [
                 // Flamingo contacts and related messages will be deleted if
