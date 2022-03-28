@@ -19,7 +19,7 @@ function init()
     add_action(ON_CONTACT, '\action\ask_confirmation\run');
 }
 
-/* 
+/**
  * Composes the `Contact` from submitted Contact Form 7 data and sends the 
  * confirmation email with `contact/confirmation-email.php` if the `Contact`
  * confirmation is needed.

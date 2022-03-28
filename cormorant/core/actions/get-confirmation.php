@@ -4,6 +4,7 @@
  * to bind the action's features with the WP `add_action()`.
  */
 
+// TODO: avoid circular requirements.
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/contact/token.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
