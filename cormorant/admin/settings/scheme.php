@@ -31,27 +31,13 @@ const PAGE_SLUG = 'cormorant-settings';
 //  - name
 //  - title
 //  - input_type
-// Optional params, specific to `input_type`, can be described in an `options`
+// Optional params, specific to `input_type`, can be described in `options`
 // nested array.
 const SECTIONS = [
     [
         'name' => 'cormorant_main_settings_section',
         'title' => 'E-mail confirmation',
         'fields' => [
-            [
-                // User will be redirected to this page after following the 
-                // valid confirmation link.
-                'name' => 'confirmation_page',
-                'title' => 'Confirmation page',
-                'input_type' => 'page_select',
-            ],
-            [
-                // User will be redirected to this page when some errors 
-                // causes during processing the request by confirmation link.
-                'name' => 'confirmation_err_page',
-                'title' => 'Confirmation error page',
-                'input_type' => 'page_select',
-            ],
             [
                 'name' => 'email_subject',
                 'title' => 'Confirmation email subject',
@@ -68,9 +54,28 @@ const SECTIONS = [
                 'input_type' => 'checkbox',
             ],
             [
+                'name' => 'notify_email_subject',
+                'title' => 'Notify email subject',
+                'input_type' => 'text',
+            ],
+            [
                 'name' => 'notify_email_template',
                 'title' => 'Notify email template',
                 'input_type' => 'textarea',
+            ],
+            [
+                // User will be redirected to this page after following the
+                // valid confirmation link.
+                'name' => 'confirmation_page',
+                'title' => 'Confirmation page',
+                'input_type' => 'page_select',
+            ],
+            [
+                // User will be redirected to this page when some errors
+                // causes during processing the request by confirmation link.
+                'name' => 'confirmation_err_page',
+                'title' => 'Confirmation error page',
+                'input_type' => 'page_select',
             ],
             [
                 // Flamingo contacts and related messages will be deleted if
