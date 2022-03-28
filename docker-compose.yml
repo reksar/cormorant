@@ -23,7 +23,7 @@ services:
     depends_on:
       - $WORDPRESS_DB_HOST
     ports:
-      - 127.0.0.1:8000:80
+      - $WP_LOCAL_HOST:$WP_LOCAL_PORT:80
     env_file:
       - .env
     volumes:
