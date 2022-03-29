@@ -14,16 +14,77 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
-    # MYSQL 8 needs this for proper auth the `wordpress_cli`.
+    # MYSQL 8 needs this for proper auth the `wp_cli`.
     command: --default-authentication-plugin=mysql_native_password
+
+  email:
+    container_name: email
+    image: tozd/postfix:alpine-38
+    restart: always
+    expose:
+      - '25/tcp'
+      - '465/tcp'
+      - '587/tcp'
+    environment:
+      ROOT_ALIAS: admin@example.com
+      MAILNAME: example.com
+      MY_DESTINATION: localhost.localdomain, localhost
+    volumes:
+      - ./tmp/email/log:/var/log/postfix
 
   wp:
     container_name: wp
     image: wordpress:$WP_VERSION-apache
     depends_on:
       - $WORDPRESS_DB_HOST
+      - email
     ports:
       - $WP_LOCAL_HOST:$WP_LOCAL_PORT:80
+    environment:
+      SMTP_HOSTNAME: email
+      SMTP_PORT: 587
+      SMTP_USER: admin@example.com
+      SMTP_FROM: admin@example.com
+      WORDPRESS_CONFIG_EXTRA: |
+          // SMTP Settings
+          require_once(ABSPATH . 'wp-includes/plugin.php');
+          add_action('phpmailer_init', 'mail_smtp');
+          function mail_smtp($$phpmailer) {
+              $$phpmailer->isSMTP();
+              $$phpmailer->Host = getenv('SMTP_HOSTNAME');
+              $$phpmailer->Port = getenv('SMTP_PORT');
+              $$phpmailer->Username = getenv('SMTP_USER');
+              $$phpmailer->Password = getenv('SMTP_PASSWORD');
+              $$phpmailer->From = getenv('SMTP_FROM');
+              $$phpmailer->FromName = getenv('SMTP_FROM_NAME');
+
+              $$phpmailer->SMTPAuth = false;
+
+              // Current email service based on postfix is insecure
+              //$$phpmailer->SMTPSecure = 'tls';
+              //$$phpmailer->SMTPAutoTLS = true;
+
+              // @see about `SMTPDebug` at https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting
+              $$phpmailer->SMTPDebug = 4;
+
+              $$phpmailer->Debugoutput = function($$str) {
+                  static $$logging = true;
+                  if ($$logging === false && strpos($$str, 'SERVER -> CLIENT') !== false) {
+                      $$logging = true;
+                  }
+                  if ($$logging) {
+                      error_log("SMTP $$str");
+                  }
+                  if (strpos($$str, 'SERVER -> CLIENT: 354') !== false) {
+                      $$logging = false;
+                  }
+              };
+          }
+
+          // Prevent overriding the SMTP FROM address
+          //add_filter('wp_mail_from', function($$email) {
+          //    return $$_ENV['SMTP_FROM'];
+          //});
     env_file:
       - .env
     volumes:
