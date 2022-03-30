@@ -3,11 +3,11 @@ up:
 	docker-compose up -d
 	docker-compose logs -f wp-cli composer
 
-	# Add local and wp IPs to Postfix authorized networks.
-	# This allows emails from mynetworks clients to be forwarded
-	# to external hosts.
+	# Add local and wp IPs to Postfix authorized networks. This allows emails
+	# to be forwarded to other mail services. But many public mail services,
+	# such as Gmail, may block unauthorized IPs.
 	$(eval WP_IP=`docker-compose exec wp hostname -I`)
-	docker-compose exec email postconf \
+	docker-compose exec smtp postconf \
 		-e mynetworks="127.0.0.0/8 $(WP_IP)"
 
 .PHONY: test
@@ -24,11 +24,11 @@ down:
 
 .PHONY: clean-volumes
 clean-volumes:
+	- docker volume rm cormorant_email_data
 	- docker volume rm cormorant_db_data
 	- docker volume rm cormorant_wp_core
 
 .PHONY: clean
 clean: down clean-volumes
 	rm -rf tmp
-	# TODO: remove network
 	# TODO: remove images optionally

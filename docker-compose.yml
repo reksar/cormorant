@@ -17,8 +17,8 @@ services:
     # MYSQL 8 needs this for proper auth the `wp_cli`.
     command: --default-authentication-plugin=mysql_native_password
 
-  email:
-    container_name: email
+  smtp:
+    container_name: smtp
     image: tozd/postfix:alpine-38
     restart: always
     expose:
@@ -26,65 +26,24 @@ services:
       - '465/tcp'
       - '587/tcp'
     environment:
-      ROOT_ALIAS: admin@example.com
-      MAILNAME: example.com
+      ROOT_ALIAS: $SMTP_USER
+      MAILNAME: $SMTP_DOMAINNAME
       MY_DESTINATION: localhost.localdomain, localhost
+    env_file:
+      - .env
     volumes:
+      - email_data:/var/spool/postfix
       - ./tmp/email/log:/var/log/postfix
 
+  # Wordpress. Main service.
   wp:
     container_name: wp
     image: wordpress:$WP_VERSION-apache
     depends_on:
       - $WORDPRESS_DB_HOST
-      - email
+      - smtp
     ports:
       - $WP_LOCAL_HOST:$WP_LOCAL_PORT:80
-    environment:
-      SMTP_HOSTNAME: email
-      SMTP_PORT: 587
-      SMTP_USER: admin@example.com
-      SMTP_FROM: admin@example.com
-      WORDPRESS_CONFIG_EXTRA: |
-          // SMTP Settings
-          require_once(ABSPATH . 'wp-includes/plugin.php');
-          add_action('phpmailer_init', 'mail_smtp');
-          function mail_smtp($$phpmailer) {
-              $$phpmailer->isSMTP();
-              $$phpmailer->Host = getenv('SMTP_HOSTNAME');
-              $$phpmailer->Port = getenv('SMTP_PORT');
-              $$phpmailer->Username = getenv('SMTP_USER');
-              $$phpmailer->Password = getenv('SMTP_PASSWORD');
-              $$phpmailer->From = getenv('SMTP_FROM');
-              $$phpmailer->FromName = getenv('SMTP_FROM_NAME');
-
-              $$phpmailer->SMTPAuth = false;
-
-              // Current email service based on postfix is insecure
-              //$$phpmailer->SMTPSecure = 'tls';
-              //$$phpmailer->SMTPAutoTLS = true;
-
-              // @see about `SMTPDebug` at https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting
-              $$phpmailer->SMTPDebug = 4;
-
-              $$phpmailer->Debugoutput = function($$str) {
-                  static $$logging = true;
-                  if ($$logging === false && strpos($$str, 'SERVER -> CLIENT') !== false) {
-                      $$logging = true;
-                  }
-                  if ($$logging) {
-                      error_log("SMTP $$str");
-                  }
-                  if (strpos($$str, 'SERVER -> CLIENT: 354') !== false) {
-                      $$logging = false;
-                  }
-              };
-          }
-
-          // Prevent overriding the SMTP FROM address
-          //add_filter('wp_mail_from', function($$email) {
-          //    return $$_ENV['SMTP_FROM'];
-          //});
     env_file:
       - .env
     volumes:
@@ -94,6 +53,7 @@ services:
       - ./tmp/composer:$TESTS_SUITE_DIR/composer
       - ./tmp/wp:$TESTS_SUITE_DIR/wp
       - ./utils/wp:/opt/utils:ro
+      - ./utils/wp-config-extra.php:/opt/wp-config-extra.php:ro
   
   # WP CLI configures the Wordpress.
   wp-cli:
@@ -108,6 +68,8 @@ services:
     volumes:
       - wp_core:$WP_CORE_DIR
       - ./utils/wp-cli:/opt/utils:ro
+      # wp-cli uses `wp-config.php` from wp service, that includes this.
+      - ./utils/wp-config-extra.php:/opt/wp-config-extra.php:ro
     command: /opt/utils/wp-config.sh
   
   # PHP Composer installs the tests suite.
@@ -126,4 +88,5 @@ services:
 
 volumes:
   db_data:
+  email_data:
   wp_core:
