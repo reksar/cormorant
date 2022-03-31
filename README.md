@@ -13,7 +13,13 @@ installs required test suite. Don't worry about some DB errors from WP CLI at
 the beginning: it waits for DB to be ready, see `utils/wp-cli/db-wait.sh`.
 
 After the WP CLI tells that "Wordpress is ready on http://127.0.0.1:8000", 
-you can access it. After the PHP Composer is done, you can `make test`.
+you can access it. The webmail is listening on http://127.0.0.1:8080.
+
+After the PHP Composer is done, you can `make test`.
+
+To see more debug info from Docker services, run `docker-compose up` instead.
+
+### Next steps
 
 `make test` - run tests with PHPUnit when services are running.
 

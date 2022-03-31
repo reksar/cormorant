@@ -9,11 +9,11 @@ then
   echo Installing Wordpress...
 
   wp core install \
-    --url="http://$WP_LOCAL_HOST:$WP_LOCAL_PORT" \
+    --url="http://$LOCALHOST:$WP_LOCAL_PORT" \
     --title="Cormorant" \
-    --admin_user=$WP_ADMIN_USER \
-    --admin_password=$WP_ADMIN_PASSWORD \
-    --admin_email=$WP_ADMIN_EMAIL
+    --admin_user=$ADMIN_NAME \
+    --admin_password=$ADMIN_PASSWORD \
+    --admin_email="$ADMIN_NAME@$EMAIL_DOMAIN"
 
   wp config set WP_DEBUG true
   wp config set WP_DEBUG_LOG true
@@ -23,4 +23,4 @@ then
 fi
 
 echo
-echo Wordpress is ready on http://$WP_LOCAL_HOST:$WP_LOCAL_PORT
+echo Wordpress is ready on http://$LOCALHOST:$WP_LOCAL_PORT

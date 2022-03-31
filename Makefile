@@ -24,8 +24,14 @@ down:
 
 .PHONY: clean-volumes
 clean-volumes:
-	- docker volume rm cormorant_email_data
-	- docker volume rm cormorant_db_data
+	- docker volume rm cormorant_db
+	- docker volume rm cormorant_smtp_mail
+	- docker volume rm cormorant_imap_mail
+	- docker volume rm cormorant_imap_etc
+	- docker volume rm cormorant_webmail_html
+	- docker volume rm cormorant_webmail_config
+	- docker volume rm cormorant_webmail_db
+	- docker volume rm cormorant_webmail_tmp
 	- docker volume rm cormorant_wp_core
 
 .PHONY: clean
