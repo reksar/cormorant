@@ -13,11 +13,9 @@ installs required test suite. Don't worry about some DB errors from WP CLI at
 the beginning: it waits for DB to be ready, see `utils/wp-cli/db-wait.sh`.
 
 After the WP CLI tells that "Wordpress is ready on http://127.0.0.1:8000", 
-you can access it. The webmail is listening on http://127.0.0.1:8080.
+you can access it.
 
 After the PHP Composer is done, you can `make test`.
-
-To see more debug info from Docker services, run `docker-compose up` instead.
 
 ### Next steps
 
@@ -28,3 +26,14 @@ To see more debug info from Docker services, run `docker-compose up` instead.
 `make down` - stop services and remove containers.
 
 `make clean` - down services, then remove volumes and `tmp` dir.
+
+### Webmail
+
+Listening on http://127.0.0.1:8080.
+
+User DB stored in `utils/imap/passwd`. SHA1 hash can be generated from a 
+password with `doveadm pw -s sha1`.
+
+#### email / password
+
+- admin@mail.my / admin

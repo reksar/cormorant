@@ -23,6 +23,7 @@ services:
     expose:
       - '25/tcp'
       - '465/tcp'
+      # TODO: read from .env
       - '587/tcp'
     environment:
       ROOT_ALIAS: $ADMIN_NAME@$EMAIL_DOMAIN
@@ -33,15 +34,22 @@ services:
     volumes:
       - smtp_mail:/var/spool/postfix
       - ./tmp/email/log:/var/log/postfix
+      - ./utils/smtp/config.sh:/etc/service/postfix/run.config:ro
 
   imap:
     container_name: imap
     depends_on:
       - smtp
     image: dovecot/dovecot
+    expose:
+      # TODO: sync port with SMTP service automatically.
+      - '12345/tcp'
+      - '143/tcp'
     volumes:
       - imap_mail:/srv/mail
       - imap_etc:/etc/dovecot
+      - ./utils/imap/dovecot.conf:/etc/dovecot/dovecot.conf:ro
+      - ./utils/imap/passwd:/etc/dovecot/passwd:ro
 
   webmail:
     container_name: webmail
