@@ -4,9 +4,10 @@ services:
 
   mysql:
     container_name: db
+    hostname: mysql
     image: mysql:8
     environment:
-      DATABASES: $WP_DB_NAME $WEBMAIL_DB_NAME
+      DATABASES: $WORDPRESS_DB_NAME $WEBMAIL_DB_NAME
       MYSQL_RANDOM_ROOT_PASSWORD: 1
     env_file:
       - .env
@@ -18,6 +19,7 @@ services:
 
   smtp:
     container_name: smtp
+    hostname: smtp
     image: tozd/postfix:alpine-38
     restart: always
     expose:
@@ -26,9 +28,9 @@ services:
       # TODO: read from .env
       - '587/tcp'
     environment:
-      ROOT_ALIAS: $ADMIN_NAME@$EMAIL_DOMAIN
       MAILNAME: $EMAIL_DOMAIN
-      MY_DESTINATION: localhost.localdomain, localhost
+      ROOT_ALIAS: $ADMIN_NAME@$EMAIL_DOMAIN
+      MY_DESTINATION: localhost.localdomain, localhost, $EMAIL_DOMAIN
     env_file:
       - .env
     volumes:
@@ -38,6 +40,7 @@ services:
 
   imap:
     container_name: imap
+    hostname: imap
     depends_on:
       - smtp
     image: dovecot/dovecot
@@ -88,11 +91,8 @@ services:
       - $LOCALHOST:$WP_LOCAL_PORT:80
     environment:
       WORDPRESS_DB_HOST: mysql
-      WORDPRESS_DB_NAME: $WP_DB_NAME
       WORDPRESS_DB_USER: $ADMIN_NAME
       WORDPRESS_DB_PASSWORD: $ADMIN_PASSWORD
-      # For PHPMailer in `utils/wp-config-wxtra.php`
-      SMTP_FROM: $ADMIN_NAME@$EMAIL_DOMAIN
     env_file:
       - .env
     volumes:
@@ -113,7 +113,6 @@ services:
     user: xfs
     environment:
       WORDPRESS_DB_HOST: mysql
-      WORDPRESS_DB_NAME: $WP_DB_NAME
       WORDPRESS_DB_USER: $ADMIN_NAME
       WORDPRESS_DB_PASSWORD: $ADMIN_PASSWORD
     env_file:

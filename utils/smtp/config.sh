@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Edit `/etc/postfix/main.cf`.
+
 postconf -e smtpd_sasl_auth_enable=yes
 postconf -e smtpd_sasl_type=dovecot
 
@@ -9,4 +11,11 @@ postconf -e smtpd_sasl_type=dovecot
 postconf -e smtpd_sasl_path=inet:imap:12345
 
 postconf -e smtpd_relay_restrictions="permit_mynetworks \
-    permit_sasl_authenticated reject_unauth_destination"
+  permit_sasl_authenticated reject_unauth_destination"
+
+
+# Edit `/etc/postfix/master.cf`.
+# See http://www.postfix.org/wip.html
+
+# Enable submission on 587 port.
+postconf -Me submission/inet='submission inet n - n - - smtpd'

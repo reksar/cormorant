@@ -3,12 +3,11 @@ up:
 	docker-compose up -d
 	docker-compose logs -f wp-cli composer
 
-	# Add local and wp IPs to Postfix authorized networks. This allows emails
-	# to be forwarded to other mail services. But many public mail services,
-	# such as Gmail, may block unauthorized IPs.
-	$(eval WP_IP=`docker-compose exec wp hostname -I`)
-	docker-compose exec smtp postconf \
-		-e mynetworks="127.0.0.0/8 $(WP_IP)"
+	# Add the Docker subnet to the Postfix authorized networks.
+	$(eval SUBNET=`docker network inspect cormorant_default \
+		| grep Subnet | grep -o '[[:digit:]\.]\+/[[:digit:]]\+'`)
+	# Note: requires the mynetworks_style=subnet
+	docker-compose exec smtp postconf -e mynetworks="$(SUBNET)"
 
 .PHONY: test
 test:
@@ -38,3 +37,16 @@ clean-volumes:
 clean: down clean-volumes
 	rm -rf tmp
 	# TODO: remove images optionally
+
+.PHONY: log-wp
+log-wp:
+	@docker-compose exec wp cat wp-content/debug.log
+
+.PHONY: rmlog-wp
+rmlog-wp:
+	docker-compose exec wp rm wp-content/debug.log
+
+.PHONY: log-smtp
+log-smtp:
+	docker-compose logs smtp
+	- cat tmp/email/log/maillog

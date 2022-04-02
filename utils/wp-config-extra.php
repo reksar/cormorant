@@ -1,33 +1,40 @@
 <?php
+
+// For `add_action()`.
+require_once ABSPATH . 'wp-includes/plugin.php';
+
 /**
  * PHP tries to SMTP with `sendmail` by default, but it is not installed.
  * So here we configuring the `PHPMailer`.
  *
  * Alternative is installing a SMTP client (e.g. `msmtp`) and setting the
  * `sendmail_path` in `/usr/local/etc/php/php.ini.production`. But I still
- * avoid rebuilding an official Docker images and use the compose file only.
+ * avoid rebuilding an official Docker images.
  */
-
-require_once ABSPATH . 'wp-includes/plugin.php';
-
 function mail_smtp($phpmailer) {
+    $domain = getenv('EMAIL_DOMAIN');
+    $admin_name = getenv('ADMIN_NAME');
+    $admin_email = "$admin_name@$domain";
+
     $phpmailer->isSMTP();
-    $phpmailer->Host = getenv('SMTP_HOSTNAME');
+    $phpmailer->Host = 'smtp';
     $phpmailer->Port = getenv('SMTP_PORT');
-    $phpmailer->From = getenv('SMTP_FROM');
-    $phpmailer->FromName = getenv('SMTP_FROM_NAME');
+    $phpmailer->From = $admin_email;
+    $phpmailer->FromName = $admin_name;
 
-    // Current SMTP configuration is insecure.
-    $phpmailer->SMTPAuth = false;
-    //$phpmailer->Username = getenv('SMTP_USER');
-    //$phpmailer->Password = getenv('SMTP_PASSWORD');
-    //$phpmailer->SMTPSecure = 'tls';
-    //$phpmailer->SMTPAutoTLS = true;
+    // Email services use SASL for auth.
+    // @see `README.md#webmail`
+    $phpmailer->SMTPAuth = true;
+    $phpmailer->Username = $admin_email;
+    $phpmailer->Password = getenv('ADMIN_PASSWORD');
+    $phpmailer->SMTPSecure = 'none';
+    $phpmailer->SMTPAutoTLS = false;
 
-    // 0..4
-    // @see `SMTPDebug`
-    //   at https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting
-    $phpmailer->SMTPDebug = 3;
+    // Use 0..4 int to set the debug level.
+    // I'm too lazy to include one more file, but pretend it's made for
+    // polymorphism and I avoid depending on a concrete class.
+    // @see https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting#enabling-debug-output
+    $phpmailer->SMTPDebug = 4;
 
     $phpmailer->Debugoutput = function($str) {
         static $logging = true;

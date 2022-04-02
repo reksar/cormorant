@@ -31,9 +31,10 @@ After the PHP Composer is done, you can `make test`.
 
 Listening on http://127.0.0.1:8080.
 
-User DB stored in `utils/imap/passwd`. SHA1 hash can be generated from a 
-password with `doveadm pw -s sha1`.
-
 #### email / password
 
 - admin@mail.my / admin
+- user@mail.my / pass
+
+User DB stored in `utils/imap/passwd`. SHA1 hash can be generated from a 
+password with `doveadm pw -s sha1` inside `imap` container.
