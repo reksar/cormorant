@@ -49,4 +49,14 @@ rmlog-wp:
 .PHONY: log-smtp
 log-smtp:
 	docker-compose logs smtp
-	- cat tmp/email/log/maillog
+	- @cat tmp/smtp/log/maillog
+
+.PHONY: rmlog-smtp
+rmlog-smtp:
+	- rm tmp/smtp/log/maillog
+
+.PHONY: log
+log: log-wp log-smtp
+
+.PHONY: rmlog
+rmlog: rmlog-wp rmlog-smtp

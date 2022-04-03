@@ -23,19 +23,17 @@ services:
     image: tozd/postfix:alpine-38
     restart: always
     expose:
-      - '25/tcp'
-      - '465/tcp'
-      # TODO: read from .env
-      - '587/tcp'
+      - '$SMTP_PORT/tcp'
     environment:
-      MAILNAME: $EMAIL_DOMAIN
       ROOT_ALIAS: $ADMIN_NAME@$EMAIL_DOMAIN
-      MY_DESTINATION: localhost.localdomain, localhost, $EMAIL_DOMAIN
+      # MAILNAME becomes myhostname
+      MAILNAME: $EMAIL_DOMAIN
+      MY_DESTINATION: $$myhostname localhost.$$mydomain
     env_file:
       - .env
     volumes:
       - smtp_mail:/var/spool/postfix
-      - ./tmp/email/log:/var/log/postfix
+      - ./tmp/smtp/log:/var/log/postfix
       - ./utils/smtp/config.sh:/etc/service/postfix/run.config:ro
 
   imap:
@@ -45,8 +43,7 @@ services:
       - smtp
     image: dovecot/dovecot
     expose:
-      # TODO: sync port with SMTP service automatically.
-      - '12345/tcp'
+      - '$IMAP_AUTH_PORT/tcp'
       - '143/tcp'
     volumes:
       - imap_mail:/srv/mail
