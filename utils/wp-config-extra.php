@@ -25,6 +25,7 @@ function mail_smtp($phpmailer) {
     // Email services use SASL for auth.
     // @see `README.md#webmail`
     $phpmailer->SMTPAuth = true;
+    $phpmailer->AuthType = 'PLAIN';
     $phpmailer->Username = $admin_email;
     $phpmailer->Password = getenv('ADMIN_PASSWORD');
     $phpmailer->SMTPSecure = 'none';

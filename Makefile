@@ -40,11 +40,11 @@ clean: down clean-volumes
 
 .PHONY: log-wp
 log-wp:
-	@docker-compose exec wp cat wp-content/debug.log
+	- @docker-compose exec wp cat wp-content/debug.log
 
 .PHONY: rmlog-wp
 rmlog-wp:
-	docker-compose exec wp rm wp-content/debug.log
+	- docker-compose exec wp rm wp-content/debug.log
 
 .PHONY: log-smtp
 log-smtp:

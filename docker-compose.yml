@@ -25,16 +25,15 @@ services:
     expose:
       - '$SMTP_PORT/tcp'
     environment:
-      ROOT_ALIAS: $ADMIN_NAME@$EMAIL_DOMAIN
-      # MAILNAME becomes myhostname
-      MAILNAME: $EMAIL_DOMAIN
+      MAILNAME: localemail
       MY_DESTINATION: $$myhostname localhost.$$mydomain
     env_file:
       - .env
     volumes:
-      - smtp_mail:/var/spool/postfix
+      - smtp_mail:$POSTFIX_SPOOLDIR
       - ./tmp/smtp/log:/var/log/postfix
       - ./utils/smtp/config.sh:/etc/service/postfix/run.config:ro
+      - ./utils/smtp/vmailbox:$POSTFIX_MAPDIR/vmailbox:ro
 
   imap:
     container_name: imap
