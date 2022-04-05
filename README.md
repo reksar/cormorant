@@ -37,4 +37,5 @@ Listening on http://127.0.0.1:8080.
 - user@mail.my / pass
 
 User DB stored in `utils/imap/passwd`. SHA1 hash can be generated from a 
-password with `doveadm pw -s sha1` inside `imap` container.
+password with `doveadm pw -s sha1` inside `imap` container. Mailboxes are 
+configured in the `utils/smtp/vmailbox`.

@@ -46,17 +46,17 @@ log-wp:
 rmlog-wp:
 	- docker-compose exec wp rm wp-content/debug.log
 
-.PHONY: log-smtp
-log-smtp:
-	docker-compose logs smtp
+.PHONY: log-mail
+log-mail:
+	docker-compose logs smtp imap
 	- @cat tmp/smtp/log/maillog
 
-.PHONY: rmlog-smtp
-rmlog-smtp:
+.PHONY: rmlog-mail
+rmlog-mail:
 	- rm tmp/smtp/log/maillog
 
 .PHONY: log
-log: log-wp log-smtp
+log: log-wp log-mail
 
 .PHONY: rmlog
-rmlog: rmlog-wp rmlog-smtp
+rmlog: rmlog-wp rmlog-mail

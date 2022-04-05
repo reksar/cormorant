@@ -44,6 +44,7 @@ services:
     expose:
       - '$IMAP_AUTH_PORT/tcp'
       - '143/tcp'
+      - '24/tcp'
     volumes:
       - imap_mail:/srv/mail
       - imap_etc:/etc/dovecot

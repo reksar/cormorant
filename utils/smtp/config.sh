@@ -1,12 +1,14 @@
 #!/bin/bash
 
+readonly IMAP_HOST=imap
+
 sasl() {
   postconf -e smtpd_sasl_auth_enable=yes
   postconf -e smtpd_sasl_type=dovecot
 
   # Use `inet:<host>:<port>` instead of `private/auth` when dovecot is remote.
   # See https://doc.dovecot.org/configuration_manual/howto/postfix_and_dovecot_sasl/
-  postconf -e smtpd_sasl_path=inet:imap:$IMAP_AUTH_PORT
+  postconf -e smtpd_sasl_path=inet:$IMAP_HOST:$IMAP_AUTH_PORT
 
   postconf -e smtpd_relay_restrictions="permit_mynetworks \
     permit_sasl_authenticated reject_unauth_destination"
@@ -50,6 +52,11 @@ vmail() {
 # Enable submission on 587 port.
 # See http://www.postfix.org/wip.html about editing `/etc/postfix/master.cf`.
 postconf -Me submission/inet='submission inet n - n - - smtpd'
+
+# LMTP with remote IMAP host.
+# See https://www.postfix.org/postconf.5.html#virtual_transport
+# See https://wiki.dovecot.org/HowTo/PostfixDovecotLMTP
+postconf -e virtual_transport=lmtp:inet:$IMAP_HOST
 
 sasl
 vmail
