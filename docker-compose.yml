@@ -4,26 +4,92 @@ services:
 
   mysql:
     container_name: db
+    hostname: mysql
     image: mysql:8
     environment:
-      MYSQL_DATABASE: $WORDPRESS_DB_NAME
-      MYSQL_USER: $WORDPRESS_DB_USER
-      MYSQL_PASSWORD: $WORDPRESS_DB_PASSWORD
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      DATABASES: $WORDPRESS_DB_NAME $WEBMAIL_DB_NAME
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/mysql
-    # MYSQL 8 needs this for proper auth the `wordpress_cli`.
+      - db:/var/lib/mysql
+      - ./utils/mysql:/docker-entrypoint-initdb.d:ro
+    # MYSQL 8 needs this for proper auth the `wp_cli`.
     command: --default-authentication-plugin=mysql_native_password
 
+  smtp:
+    container_name: smtp
+    hostname: smtp
+    image: tozd/postfix:alpine-38
+    restart: always
+    expose:
+      - '$SMTP_PORT/tcp'
+    environment:
+      MAILNAME: localemail
+      MY_DESTINATION: $$myhostname localhost.$$mydomain
+    env_file:
+      - .env
+    volumes:
+      - smtp_mail:$POSTFIX_SPOOLDIR
+      - ./tmp/smtp/log:/var/log/postfix
+      - ./utils/smtp/config.sh:/etc/service/postfix/run.config:ro
+      - ./utils/smtp/vmailbox:$POSTFIX_MAPDIR/vmailbox:ro
+
+  imap:
+    container_name: imap
+    hostname: imap
+    depends_on:
+      - smtp
+    image: dovecot/dovecot
+    expose:
+      - '$IMAP_AUTH_PORT/tcp'
+      - '143/tcp'
+      - '24/tcp'
+    volumes:
+      - imap_mail:/srv/mail
+      - imap_etc:/etc/dovecot
+      - ./utils/imap/dovecot.conf:/etc/dovecot/dovecot.conf:ro
+      - ./utils/imap/passwd:/etc/dovecot/passwd:ro
+
+  webmail:
+    container_name: webmail
+    image: roundcube/roundcubemail
+    depends_on:
+      - smtp
+      - imap
+      - mysql
+    ports:
+      - $LOCALHOST:$WEBMAIL_LOCAL_PORT:80
+    environment:
+      ROUNDCUBEMAIL_DEFAULT_HOST: imap
+      ROUNDCUBEMAIL_SMTP_SERVER: smtp
+      ROUNDCUBEMAIL_SMTP_PORT: $SMTP_PORT
+      ROUNDCUBEMAIL_DB_TYPE: mysql
+      ROUNDCUBEMAIL_DB_HOST: mysql
+      ROUNDCUBEMAIL_DB_NAME: $WEBMAIL_DB_NAME
+      ROUNDCUBEMAIL_DB_USER: $ADMIN_NAME
+      ROUNDCUBEMAIL_DB_PASSWORD: $ADMIN_PASSWORD
+    env_file:
+      - .env
+    volumes:
+      - webmail_html:/var/www/html
+      - webmail_config:/var/roundcube/config
+      - webmail_db:/var/roundcube/db
+      - webmail_tmp:/tmp/roundcube-temp
+
+  # Wordpress. Main service.
   wp:
     container_name: wp
     image: wordpress:$WP_VERSION-apache
     depends_on:
-      - $WORDPRESS_DB_HOST
+      - mysql
+      - webmail
     ports:
-      - 127.0.0.1:8000:80
+      - $LOCALHOST:$WP_LOCAL_PORT:80
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: $ADMIN_NAME
+      WORDPRESS_DB_PASSWORD: $ADMIN_PASSWORD
     env_file:
       - .env
     volumes:
@@ -33,20 +99,26 @@ services:
       - ./tmp/composer:$TESTS_SUITE_DIR/composer
       - ./tmp/wp:$TESTS_SUITE_DIR/wp
       - ./utils/wp:/opt/utils:ro
+      - ./utils/wp-config-extra.php:/opt/wp-config-extra.php:ro
   
   # WP CLI configures the Wordpress.
   wp-cli:
     container_name: wp-cli
     image: wordpress:cli
     depends_on:
-      - $WORDPRESS_DB_HOST
       - wp
     user: xfs
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: $ADMIN_NAME
+      WORDPRESS_DB_PASSWORD: $ADMIN_PASSWORD
     env_file:
       - .env
     volumes:
       - wp_core:$WP_CORE_DIR
       - ./utils/wp-cli:/opt/utils:ro
+      # wp-cli uses `wp-config.php` from wp service, that includes this.
+      - ./utils/wp-config-extra.php:/opt/wp-config-extra.php:ro
     command: /opt/utils/wp-config.sh
   
   # PHP Composer installs the tests suite.
@@ -64,5 +136,12 @@ services:
     command: /opt/utils/setup.sh
 
 volumes:
-  db_data:
+  db:
+  smtp_mail:
+  imap_mail:
+  imap_etc:
+  webmail_html:
+  webmail_config:
+  webmail_db:
+  webmail_tmp:
   wp_core:

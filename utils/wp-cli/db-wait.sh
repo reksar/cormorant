@@ -18,6 +18,7 @@ attempts=30
 while ! wp db check --quiet && [ $attempts -gt 0 ]
 do
   (( attempts-- ))
+  echo waiting for DB to be ready...
   sleep $INTERVAL
 done
 
