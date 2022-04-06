@@ -20,6 +20,7 @@ then
 
   wp plugin install contact-form-7 --activate
   wp plugin install flamingo --activate
+  wp plugin activate cormorant
 fi
 
 echo

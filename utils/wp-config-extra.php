@@ -35,7 +35,7 @@ function mail_smtp($phpmailer) {
     // I'm too lazy to include one more file, but pretend it's made for
     // polymorphism and I avoid depending on a concrete class.
     // @see https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting#enabling-debug-output
-    $phpmailer->SMTPDebug = 4;
+    $phpmailer->SMTPDebug = 0;
 
     $phpmailer->Debugoutput = function($str) {
         static $logging = true;

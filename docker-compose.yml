@@ -116,6 +116,7 @@ services:
       - .env
     volumes:
       - wp_core:$WP_CORE_DIR
+      - ./cormorant:$WP_CORE_DIR/wp-content/plugins/cormorant:ro
       - ./utils/wp-cli:/opt/utils:ro
       # wp-cli uses `wp-config.php` from wp service, that includes this.
       - ./utils/wp-config-extra.php:/opt/wp-config-extra.php:ro
