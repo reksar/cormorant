@@ -56,10 +56,9 @@ class Contact
         $this->contact->delete();
     }
 
-    public function delete_related_messages()
+    public function related_messages()
     {
-        foreach (\flamingo\find_messages_from($this->email()) as $message)
-            $message->delete();
+        return \flamingo\find_messages_from($this->email());
     }
 
     public function is_confirmed()

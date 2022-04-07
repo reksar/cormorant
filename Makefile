@@ -56,7 +56,7 @@ rmlog-mail:
 	- rm tmp/smtp/log/maillog
 
 .PHONY: log
-log: log-wp log-mail
+log: log-mail log-wp
 
 .PHONY: rmlog
 rmlog: rmlog-wp rmlog-mail
