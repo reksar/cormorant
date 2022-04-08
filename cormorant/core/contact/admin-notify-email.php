@@ -2,10 +2,15 @@
 // TODO: DRY with confirmation-email
 
 const HEADERS = "Content-Type: text/html; charset=UTF-8\n";
-const EMAIL_SHORTCODE = '[email]';
 
-// Available shortcodes based on these keys: "[_<key>]".
-// See `replace_meta_shortcodes()`.
+// Fields of a `Flamingo_Inbound_Message` object.
+const COMMON_KEYS = [
+    'from_email',
+    'from_name',
+    'subject',
+];
+
+// Keys of a `Flamingo_Inbound_Message Object->meta` array.
 const META_KEYS = [
     'date',
     'time',
@@ -21,32 +26,72 @@ function send($contact)
     wp_mail($admin_email, $subject, $body, HEADERS);
 }
 
-// TODO: more shortcodes from CF7.
-// TODO: date/time format.
 function body($contact)
 {
-    $template = \settings\get('notify_email_template') ?: EMAIL_SHORTCODE;
-
     $messages = $contact->related_messages();
-    $last_message = end($messages);
-    $message_meta = $last_message->meta;
-    $text = replace_meta_shortcodes($template, $message_meta);
-
-    $email = $contact->email();
-    return str_replace(EMAIL_SHORTCODE, $email, $text);
+    $last_message = (array) end($messages);
+    $shortcodes_values = all_shortcodes($last_message);
+    $replacements = dict_to_pairs($shortcodes_values);
+    $replace = __NAMESPACE__ . '\replace_shortcode';
+    $template = \settings\get('notify_email_template');
+    return array_reduce($replacements, $replace, $template);
 }
 
-function replace_meta_shortcodes($template, $message_meta)
+function all_shortcodes($message)
 {
-    $meta = array_intersect_key($message_meta, array_flip(META_KEYS));
+    return array_merge(
+        common_shortcodes($message),
+        meta_shortcodes($message),
+        field_shortcodes($message));
+}
 
-    return array_reduce(array_keys($meta),
+function common_shortcodes($message)
+{
+    $values = array_intersect_key($message, array_flip(COMMON_KEYS));
+    return shortcodes_values(__NAMESPACE__ . '\shortcode', $values);
+}
 
-        function($text, $key) use ($meta) {
-            $shortcode = "[_$key]";
-            $value = $meta[$key];
-            return str_replace($shortcode, $value, $text);
-        },
+function meta_shortcodes($message)
+{
+    $values = array_intersect_key($message['meta'], array_flip(META_KEYS));
+    return shortcodes_values(__NAMESPACE__ . '\meta_shortcode', $values);
+}
 
-        $template);
+function field_shortcodes($message)
+{
+    $values = array_filter($message['fields'], 'is_scalar');
+    return shortcodes_values(__NAMESPACE__ . '\shortcode', $values);
+}
+
+function shortcodes_values($shortcode_builder, $values)
+{
+    $keys = array_keys($values);
+    $shortcodes = array_map($shortcode_builder, $keys);
+    return array_combine($shortcodes, $values);
+}
+
+function replace_shortcode($template, $pair)
+{
+    list($shortcode, $value) = $pair;
+    return str_replace($shortcode, $value, $template);
+}
+
+function dict_to_pairs($dict)
+{
+    return array_map(__NAMESPACE__ . '\pair', array_keys($dict), $dict);
+}
+
+function pair($x, $y)
+{
+    return [$x, $y];
+}
+
+function shortcode($key)
+{
+    return "[$key]";
+}
+
+function meta_shortcode($key)
+{
+    return "[_$key]";
 }
