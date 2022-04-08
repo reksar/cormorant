@@ -3,6 +3,6 @@
 function days_to_confirm($value)
 {
     $days = (int) $value;
-    $max_days = \settings\field('days_to_confirm')['max'];
+    $max_days = \settings\field('days_to_confirm')['options']['max'];
     return (0 <= $days && $days <= $max_days) ? $days : 0;
 }

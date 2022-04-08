@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/input/input.php';
 
 function days_to_confirm()
 {
-    $max_days = \settings\field('days_to_confirm')['max'];
+    $max_days = \settings\field('days_to_confirm')['options']['max'];
 
     printf(
         '<p>%s</p>',
@@ -15,8 +15,5 @@ function days_to_confirm()
         '<p>%s</p>',
         __('Set to 0 if unconfirmed contacts cleanup is not needed.'));
 
-    input('number', __FUNCTION__, [
-        'min' => 0,
-        'max' => $max_days,
-    ]);
+    print(input(__FUNCTION__));
 }

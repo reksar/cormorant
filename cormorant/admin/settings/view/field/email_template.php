@@ -5,9 +5,10 @@ require_once dirname(__DIR__) . '/input/input.php';
 function email_template()
 {
     printf(
-        '<p>%s</p>',
-        __('Template for the confirmation letter (HTML format is available). 
-            Use <b>[confirmation-link]</b> shortcode.'));
+        '<p>%s %s</p><p>%s: <b>[confirmation-link]</b></p>',
+        __('Confirmation email template.'),
+        __('HTML format is available.'),
+        __('Shortcodes'));
 
-    input('textarea', __FUNCTION__);
+    print(input(__FUNCTION__));
 }

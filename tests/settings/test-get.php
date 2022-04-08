@@ -178,3 +178,52 @@ class Test_Email_Template extends WP_UnitTestCase
         $this->assertEquals($this->actual_value(), $str_value);
     }
 }
+
+class Test_Notify_On_Confirmation extends WP_UnitTestCase
+{
+    use Common;
+
+    const NAME = 'notify_admin_on_confirmation';
+
+    const CHECKED = true;
+    const NOT_CHECKED = false; // default
+
+    function test_get_default_gives_not_checked()
+    {
+        $this->assertEquals($this->actual_value(), self::NOT_CHECKED);
+    }
+
+    function test_valid_value_gives_checked()
+    {
+        $this->set_value(self::CHECKED);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_positive_int_gives_checked()
+    {
+        $positive_int = 123;
+        $this->set_value($positive_int);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_negative_int_gives_checked()
+    {
+        $negative_int = -123;
+        $this->set_value($negative_int);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+
+    function test_empty_string_gives_bot_checked()
+    {
+        $empty_string = '';
+        $this->set_value($empty_string);
+        $this->assertEquals($this->actual_value(), self::NOT_CHECKED);
+    }
+
+    function test_not_empty_string_gives_checked()
+    {
+        $not_empty_string = '123';
+        $this->set_value($not_empty_string);
+        $this->assertEquals($this->actual_value(), self::CHECKED);
+    }
+}

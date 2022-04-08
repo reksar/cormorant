@@ -1,9 +1,10 @@
 <?php namespace contact;
-/*
- * The `Contact` factory. Instatiates the `Contact` class instances.
+/**
  * It is the interlayer between the Cormorant actions and the Flamingo facade.
+ * The factory that wraps a Flamingo contacts with the `Contact` class.
  */
 
+// TODO: avoid circular requirements.
 require_once 'class-contact.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';

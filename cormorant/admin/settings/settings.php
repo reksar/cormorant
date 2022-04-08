@@ -1,21 +1,28 @@
 <?php namespace settings;
+/**
+ * See `scheme.php` if you need to add or edit the Cormorant WP settings.
+ *
+ * Here are the functions to register and put all the parts of the settings
+ * together to make them work.
+ */
 
 require_once 'scheme.php';
 require_once 'sanitize.php';
+
+define('settings\ALL_FIELDS',
+    ...array_merge(array_map('\settings\section_fields', SECTIONS)));
+
 use settings;
 
-require_once 'view/settings.php';
+// Default value of a settings field.
+const DEFAULT_VALUE = '';
 
-// Each section requires the file `view/section/{section_name}.php`
-foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
-    require_once $section_view;
-
-// Each field requires the file `view/field/{field_name}.php`
-foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
-    require_once $field_view;
-// and the file `sanitize/{field_name}.php`
-foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
-    require_once $sanitizer;
+// Override the `DEFAULT_VALUE` for a fields with specified `input_type`.
+const TYPE_DEFAULTS = [
+    'checkbox' => false,
+    'number' => 0,
+    'page_select' => 0,
+];
 
 function init()
 {
@@ -60,22 +67,37 @@ function get($field_name)
 
 function default_value($field_name)
 {
-    return field($field_name)['default'] ?? '';
-}
-
-function field($name)
-{
-    foreach (all_fields() as $field)
-        if ($field['name'] == $name)
-            return $field;
+    $field = field($field_name);
+    $type = $field['input_type'];
+    $default = @$field['options']['default'];
+    return $default ?? @TYPE_DEFAULTS[$type] ?? DEFAULT_VALUE;
 }
 
 /**
- * @return fields of all settings section.
+ * @return params of the setting field with the given `name`.
+ * @see `scheme.php`.
  */
-function all_fields()
+function field($name)
 {
-    return array_merge(...array_map('\settings\section_fields', SECTIONS));
+    foreach (ALL_FIELDS as $field)
+        if (field_name($field) == $name)
+            return $field;
+}
+
+function field_name($field)
+{
+    return $field['name'];
+}
+
+function all_checkbox_names()
+{
+    $checkboxes = array_filter(ALL_FIELDS, '\settings\is_checkbox');
+    return array_map('\settings\field_name', $checkboxes);
+}
+
+function is_checkbox($field)
+{
+    return $field['input_type'] == 'checkbox';
 }
 
 function section_fields($section)

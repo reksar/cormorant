@@ -1,4 +1,8 @@
 <?php namespace action\ask_confirmation;
+/**
+ * This is an action module. The `init()` function is required for an action
+ * to bind the action's features with the WP `add_action()`.
+ */
 
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
@@ -15,7 +19,7 @@ function init()
     add_action(ON_CONTACT, '\action\ask_confirmation\run');
 }
 
-/* 
+/**
  * Composes the `Contact` from submitted Contact Form 7 data and sends the 
  * confirmation email with `contact/confirmation-email.php` if the `Contact`
  * confirmation is needed.

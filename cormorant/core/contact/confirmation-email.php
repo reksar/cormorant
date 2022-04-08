@@ -1,6 +1,7 @@
 <?php namespace contact\confirmation_email;
+// TODO: DRY with admin-notify-email
 
-require_once CORMORANT_DIR . 'admin/settings/settings.php';
+// TODO: avoid circular requirements.
 require_once CORMORANT_DIR . 'core/actions/get-confirmation.php';
 
 const LINK_SHORTCODE = '[confirmation-link]';

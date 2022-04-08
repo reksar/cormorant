@@ -1,8 +1,12 @@
 <?php
 
 require_once 'token.php';
+// TODO: avoid circular requirements.
 require_once 'confirmation-email.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
+
+require_once CORMORANT_DIR . 'core/actions/interface.php';
+use const \actions\ON_CONFIRM;
 
 /*
  * Adapter for the `Flamingo_Contact`.
@@ -41,8 +45,10 @@ class Contact
 
     public function confirm()
     {
-        if (! $this->is_confirmed())
+        if (! $this->is_confirmed()) {
             $this->add_tag(self::TAG_CONFIRMED);
+            do_action(\actions\ON_CONFIRM, $this);
+        }
     }
 
     public function delete()
@@ -50,10 +56,9 @@ class Contact
         $this->contact->delete();
     }
 
-    public function delete_related_messages()
+    public function related_messages()
     {
-        foreach (\flamingo\find_messages_from($this->email()) as $message)
-            $message->delete();
+        return \flamingo\find_messages_from($this->email());
     }
 
     public function is_confirmed()

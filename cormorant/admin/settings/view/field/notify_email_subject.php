@@ -2,7 +2,7 @@
 
 require_once dirname(__DIR__) . '/input/input.php';
 
-function email_subject()
+function notify_email_subject()
 {
     print(input(__FUNCTION__));
 }
