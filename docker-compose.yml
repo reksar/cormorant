@@ -21,7 +21,7 @@ services:
     container_name: smtp
     hostname: smtp
     image: tozd/postfix:alpine-38
-    restart: unless-stopped
+    restart: on-failure
     expose:
       - '$SMTP_PORT/tcp'
     environment:

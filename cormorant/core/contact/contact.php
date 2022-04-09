@@ -21,13 +21,12 @@ function by_email($email)
 
 function by_token($token)
 {
-    if (! $token)
-        throw new \err\Bad_Token($token);
-
-    $id = \contact\token\id($token);
     $email = \contact\token\email($token);
     $flamingo_contact = \flamingo\contact($email);
 
+    // Flamingo looks for contacts by email and this is additional check that
+    // found contact have valid ID.
+    $id = \contact\token\id($token);
     if ($flamingo_contact->id() !== $id)
         throw new \err\Bad_Token($token);
 
