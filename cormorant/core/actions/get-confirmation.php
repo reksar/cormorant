@@ -10,21 +10,14 @@ require_once CORMORANT_DIR . 'core/contact/token.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 
-const HTTP_STATUS_MOVED_PERMANENTLY = 301;
-const TOKEN_URL_PARAM = 'token';
+use const \actions\TOKEN_URL_PARAM;
 
-// When an user follows the confirmation link from email and the WP GETs 
-// a request with the `WP_ACTION`.
-const WP_ACTION = 'confirm_email';
-// Default action. For not authorized users.
-const ON_CONFIRMATION = 'admin_post_nopriv_' . WP_ACTION;
-// When some authorized WP user confirms email.
-const ON_CONFIRMATION_AUTH = 'admin_post_' . WP_ACTION;
+const HTTP_STATUS_MOVED_PERMANENTLY = 301;
 
 function init()
 {
-    add_action(ON_CONFIRMATION, '\action\get_confirmation\run');
-    add_action(ON_CONFIRMATION_AUTH, '\action\get_confirmation\run');
+    add_action(\actions\ON_CONFIRMATION, '\action\get_confirmation\run');
+    add_action(\actions\ON_CONFIRMATION_AUTH, '\action\get_confirmation\run');
 }
 
 /*

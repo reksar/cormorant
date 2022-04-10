@@ -1,14 +1,12 @@
 <?php
 
-require_once CORMORANT_DIR . 'core/contact/admin-notify-email.php';
-use function contact\admin_notify_email\common_shortcodes;
-use function contact\admin_notify_email\meta_shortcodes;
-use function contact\admin_notify_email\field_shortcodes;
-use function contact\admin_notify_email\all_shortcodes;
-use function contact\admin_notify_email\dict_to_pairs;
-use function contact\admin_notify_email\replace_shortcode;
+require_once CORMORANT_DIR . 'core/contact/shortcodes/common.php';
+use function shortcodes\basic;
+use function shortcodes\meta;
+use function shortcodes\fields;
+use function shortcodes\common;
 
-// Stub for an instance of the `Flamingo_Inbound_Message` class.
+// Stub for an instance of the (array) `Flamingo_Inbound_Message`.
 const MESSAGE = [
     'channel' => 'untitled',
     'submission_status' => 'mail_sent',
@@ -58,7 +56,7 @@ const MESSAGE = [
     'consent'=> [],
 ];
 
-const EXPECTED_COMMON_SHORTCODES = [
+const EXPECTED_BASIC_SHORTCODES = [
     '[from_email]' => 'user@mail.my',
     '[from_name]' => 'User Name',
     '[subject]' => 'Some submitted subject',
@@ -79,65 +77,37 @@ const EXPECTED_FIELD_SHORTCODES = [
     '[textarea-field]' => '...',
 ];
 
-class Test_Admin_Notify_Email extends WP_UnitTestCase
+class Test_Common_Shortcodes extends WP_UnitTestCase
 {
-    function test_common_shortcodes()
+    function test_basic()
     {
         $this->assertSameSetsWithIndex(
-            EXPECTED_COMMON_SHORTCODES,
-            common_shortcodes(MESSAGE));
+            EXPECTED_BASIC_SHORTCODES,
+            basic(MESSAGE));
     }
 
-    function test_meta_shortcodes()
+    function test_meta()
     {
         $this->assertSameSetsWithIndex(
             EXPECTED_META_SHORTCODES,
-            meta_shortcodes(MESSAGE));
+            meta(MESSAGE));
     }
 
-    function test_field_shortcodes()
+    function test_fields()
     {
         $this->assertSameSetsWithIndex(
             EXPECTED_FIELD_SHORTCODES,
-            field_shortcodes(MESSAGE));
+            fields(MESSAGE));
     }
 
-    function test_all_shortcodes()
+    function test_common()
     {
         $this->assertSameSetsWithIndex(
             array_merge(
                 EXPECTED_FIELD_SHORTCODES,
                 EXPECTED_META_SHORTCODES,
-                EXPECTED_COMMON_SHORTCODES,
+                EXPECTED_BASIC_SHORTCODES,
             ),
-            all_shortcodes(MESSAGE));
-    }
-
-    function test_dict_to_pairs()
-    {
-        $dict = [
-            'item 1' => 'some value',
-            'item 2' => 'yet another value',
-            3 => 4,
-            'nested array' => [1, 2, 3],
-        ];
-        $expected_pairs = [
-            ['item 1', 'some value'],
-            ['item 2', 'yet another value'],
-            [3, 4],
-            ['nested array', [1, 2, 3]],
-        ];
-        $actual_pairs = dict_to_pairs($dict);
-        $this->assertEqualSets($expected_pairs, $actual_pairs);
-    }
-
-    function test_replace_shortcode()
-    {
-        $template = 'This is [shortcode-name]';
-        $shortcode = '[shortcode-name]';
-        $value = 'replacement text';
-        $expected_text = 'This is replacement text';
-        $actual_text = replace_shortcode($template, [$shortcode, $value]);
-        $this->assertEquals($expected_text, $actual_text);
+            common(MESSAGE));
     }
 }

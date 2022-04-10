@@ -11,12 +11,9 @@ require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 // the Flamingo gets valid contact form data.
 const CF7_STATUS_OK = 'mail_sent';
 
-// When the Flamingo gets an incoming contact from Contact Form 7.
-const ON_CONTACT = 'flamingo_add_inbound';
-
 function init()
 {
-    add_action(ON_CONTACT, '\action\ask_confirmation\run');
+    add_action(\actions\ON_CONTACT, '\action\ask_confirmation\run');
 }
 
 /**
@@ -40,7 +37,9 @@ function run(array $form_data): array
 
     try
     {
-        \contact\by_email(email($form_data))->ask_confirmation();
+        $email = email($form_data);
+        $contact = \contact\by_email($email);
+        $contact->ask_confirmation();
     }
     catch (\err\No_Contact $err)
     {

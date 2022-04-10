@@ -6,11 +6,9 @@
 
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 
-const ON_CRON_DAILY = 'flamingo_daily_cron_job';
-
 function init()
 {
-    add_action(ON_CRON_DAILY, '\action\clear_expired_contacts\run');
+    add_action(\actions\ON_CRON_DAILY, '\action\clear_expired_contacts\run');
 }
 
 function run()

@@ -2,17 +2,16 @@
 
 require_once 'token.php';
 // TODO: avoid circular requirements.
-require_once 'confirmation-email.php';
+require_once 'email/confirmation.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
-
 require_once CORMORANT_DIR . 'core/actions/interface.php';
-use const \actions\ON_CONFIRM;
 
 /*
- * Adapter for the `Flamingo_Contact`.
+ * `Flamingo_Contact` wrapper.
  */
 class Contact
 {
+    // TODO: multilanguage
     const TAG_CONFIRMED = 'confirmed';
 
     private $contact;
@@ -40,7 +39,7 @@ class Contact
     public function ask_confirmation()
     {
         if (! $this->is_confirmed())
-            \contact\confirmation_email\send($this);
+            \email\confirmation\send($this);
     }
 
     public function confirm()

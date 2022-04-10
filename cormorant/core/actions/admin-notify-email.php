@@ -4,12 +4,10 @@
  * to bind the action's features with the WP `add_action()`.
  */
 
-use const \actions\ON_CONFIRM as ON_CONFIRM;
-
-require_once CORMORANT_DIR . 'core/contact/admin-notify-email.php';
+require_once CORMORANT_DIR . 'core/contact/email/admin-notify.php';
 
 function init()
 {
     if (\settings\get('notify_admin_on_confirmation'))
-        add_action(ON_CONFIRM, '\contact\admin_notify_email\send');
+        add_action(\actions\ON_CONFIRM, '\email\admin_notify\send');
 }
