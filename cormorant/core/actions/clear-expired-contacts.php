@@ -1,14 +1,16 @@
 <?php namespace action\clear_expired_contacts;
-/**
- * This is an action module. The `init()` function is required for an action
- * to bind the action's features with the WP `add_action()`.
- */
+
+require_once 'interface.php';
+use const \actions\ON_CRON_DAILY;
 
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 
+const RUN = __NAMESPACE__ . '\run';
+const CLEAR = __NAMESPACE__ . '\clear';
+
 function init()
 {
-    add_action(\actions\ON_CRON_DAILY, '\action\clear_expired_contacts\run');
+    add_action(ON_CRON_DAILY, RUN);
 }
 
 function run()
@@ -19,15 +21,13 @@ function run()
         return;
 
     $expired_contacts = \contact\find_unconfirmed_in($days_to_confirm);
-
-    foreach ($expired_contacts as $contact) {
-        delete_related_messages($contact);
-        $contact->delete();
-    }
+    array_walk(CLEAR, $expired_contacts);
 }
 
-function delete_related_messages($contact)
+function clear($contact)
 {
     foreach ($contact->related_messages() as $message)
         $message->delete();
+
+    $contact->delete();
 }

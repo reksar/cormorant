@@ -1,11 +1,12 @@
 <?php namespace action\ask_confirmation;
-/**
- * This is an action module. The `init()` function is required for an action
- * to bind the action's features with the WP `add_action()`.
- */
+
+require_once 'interface.php';
+use const \actions\ON_CONTACT;
 
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
+
+const RUN = __NAMESPACE__ . '\run';
 
 // This status is telling that Contact Form 7 has been sent normally and 
 // the Flamingo gets valid contact form data.
@@ -13,7 +14,7 @@ const CF7_STATUS_OK = 'mail_sent';
 
 function init()
 {
-    add_action(\actions\ON_CONTACT, '\action\ask_confirmation\run');
+    add_action(ON_CONTACT, RUN);
 }
 
 /**

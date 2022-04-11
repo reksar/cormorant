@@ -3,6 +3,7 @@
 require_once CORMORANT_DIR . 'core/actions/interface.php';
 
 const CONFIRMATION_LINK = '[confirmation-link]';
+const BLOG_ID = NULL; // Current blog.
 
 function confirmation_link($token)
 {
@@ -17,8 +18,7 @@ function confirmation_link_html($token)
 
 function confirmation_link_url($token)
 {
-    $blog_id = NULL; // Current blog
-    return get_admin_url($blog_id, confirmation_link_tail($token));
+    return get_admin_url(BLOG_ID, confirmation_link_tail($token));
 }
 
 function confirmation_link_tail($token)

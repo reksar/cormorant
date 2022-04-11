@@ -1,8 +1,7 @@
 <?php
 
 require_once 'token.php';
-// TODO: avoid circular requirements.
-require_once 'email/confirmation.php';
+require_once 'email/email.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/actions/interface.php';
 
@@ -39,7 +38,7 @@ class Contact
     public function ask_confirmation()
     {
         if (! $this->is_confirmed())
-            \email\confirmation\send($this);
+            \email\confirmation($this);
     }
 
     public function confirm()

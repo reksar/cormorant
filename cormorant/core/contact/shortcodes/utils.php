@@ -1,5 +1,8 @@
 <?php namespace shortcodes;
 
+const PAIR = __NAMESPACE__ . '\pair';
+const REPLACE_PAIR = __NAMESPACE__ . '\replace_pair';
+
 function map_keys($callback, $dict)
 {
     $keys = array_keys($dict);
@@ -10,7 +13,7 @@ function map_keys($callback, $dict)
 function replace($shortcodes, $template)
 {
     $pairs = dict_to_pairs($shortcodes);
-    return array_reduce($pairs, __NAMESPACE__ . '\replace_pair', $template);
+    return array_reduce($pairs, REPLACE_PAIR, $template);
 }
 
 function replace_pair($template, $pair)
@@ -21,7 +24,7 @@ function replace_pair($template, $pair)
 
 function dict_to_pairs($dict)
 {
-    return array_map(__NAMESPACE__ . '\pair', array_keys($dict), $dict);
+    return array_map(PAIR, array_keys($dict), $dict);
 }
 
 function pair($x, $y)

@@ -2,13 +2,12 @@
 /**
  * All PHP files in this dir, except the current file and the `interface.php`,
  * are considered action modules. Here we automatically include all actions
- * and call the `init()` function for each of them.
+ * and call the `init()` function for each of them. Use WP `add_action()`
+ * inside an action's `init()`.
  *
  * The `interface.php` contains a definitions shared between actions and other
  * third-party modules.
  */
-
-require_once 'interface.php';
 
 // TODO: automatize.
 
