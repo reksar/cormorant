@@ -8,7 +8,6 @@ function sanitize($name, $value)
 
 function sanitize_all($raw_settings)
 {
-    // TODO: refactoring?
     $keys = array_keys($raw_settings);
     $settings = preprocess_checkboxes($keys, $raw_settings);
     $values = array_map('settings\sanitize', $keys, $settings);
@@ -25,7 +24,18 @@ function sanitize_all($raw_settings)
  */
 function preprocess_checkboxes($keys, $settings)
 {
-    $checkbox_names = array_intersect(\settings\all_checkbox_names(), $keys);
+    $checkbox_names = array_intersect(all_checkbox_names(), $keys);
     $checkboxes = array_fill_keys($checkbox_names, true);
     return array_replace($settings, $checkboxes);
+}
+
+function all_checkbox_names()
+{
+    $checkboxes = array_filter(ALL_FIELDS, '\settings\is_checkbox');
+    return array_map('\settings\field_name', $checkboxes);
+}
+
+function is_checkbox($field)
+{
+    return $field['input_type'] == 'checkbox';
 }

@@ -1,7 +1,7 @@
 <?php namespace view;
 
 require_once dirname(__DIR__) . '/input/input.php';
-require_once dirname(__DIR__) . '/shortcodes.php';
+require_once CORMORANT_DIR . 'admin/settings/view/shortcodes.php';
 
 function email_template()
 {

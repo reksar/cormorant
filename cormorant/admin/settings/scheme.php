@@ -8,12 +8,12 @@ require_once 'view/settings.php';
 foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
     require_once $section_view;
 
-// Each field, described in the section's `fields` array, requires the file
-// `view/field/{field_name}.php`
-foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
+// Each field, described in the section's `fields`, requires
+// the file `field/view/{field_name}.php`
+foreach (glob(__DIR__ . '/field/view/*.php') as $field_view)
     require_once $field_view;
-// and the file `sanitize/{field_name}.php`
-foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
+// and the file `field/sanitize/{field_name}.php`
+foreach (glob(__DIR__ . '/field/sanitize/*.php') as $sanitizer)
     require_once $sanitizer;
 
 const NAME = 'cormorant_settings';
