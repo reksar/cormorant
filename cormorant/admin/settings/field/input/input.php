@@ -17,7 +17,9 @@ require_once 'textarea.php';
  */
 function input($view_name)
 {
-    $field_name = name($view_name);
+    // 'view\name' -> 'view/name' -> 'name'
+    $field_name = basename(str_replace('\\', '/', $view_name));
+
     $field_value = \settings\get($field_name);
 
     $field_params = \settings\field($field_name);
@@ -25,14 +27,6 @@ function input($view_name)
     $options = @$field_params['options'];
 
     $template = "\\view\\input\\$input_type";
-    return $template($field_name, $field_value, $options);
-}
 
-/**
- * @return 'view\\name' -> 'name'
- */
-function name($namespaced)
-{
-    $name_chain = explode('\\', $namespaced);
-    return end($name_chain);
+    return $template($field_name, $field_value, $options);
 }
