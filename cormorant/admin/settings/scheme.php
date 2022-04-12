@@ -39,6 +39,14 @@ const SECTIONS = [
         'title' => 'E-mail confirmation',
         'fields' => [
             [
+                'name' => 'confirmed_tag',
+                'title' => 'Confirmed tag',
+                'input_type' => 'text',
+                'options' => [
+                    'default' => 'confirmed',
+                ],
+            ],
+            [
                 'name' => 'email_subject',
                 'title' => 'Confirmation email subject',
                 'input_type' => 'text',

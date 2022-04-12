@@ -5,14 +5,13 @@ require_once 'email/email.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/actions/interface.php';
 
+define('CONFIRMED_TAG', \settings\get('confirmed_tag'));
+
 /*
  * `Flamingo_Contact` wrapper.
  */
 class Contact
 {
-    // TODO: multilanguage
-    const TAG_CONFIRMED = 'confirmed';
-
     private $contact;
 
     public function __construct($flamingo_contact)
@@ -44,7 +43,7 @@ class Contact
     public function confirm()
     {
         if (! $this->is_confirmed()) {
-            $this->add_tag(self::TAG_CONFIRMED);
+            $this->add_tag(CONFIRMED_TAG);
             do_action(\actions\ON_CONFIRM, $this);
         }
     }
@@ -61,7 +60,7 @@ class Contact
 
     public function is_confirmed()
     {
-        return in_array(self::TAG_CONFIRMED, $this->tags());
+        return in_array(CONFIRMED_TAG, $this->tags());
     }
 
     public function tags()
