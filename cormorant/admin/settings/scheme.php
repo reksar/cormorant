@@ -8,13 +8,16 @@ require_once 'view/settings.php';
 foreach (glob(__DIR__ . '/view/section/*.php') as $section_view)
     require_once $section_view;
 
-// Each field, described in the section's `fields` array, requires the file
-// `view/field/{field_name}.php`
-foreach (glob(__DIR__ . '/view/field/*.php') as $field_view)
+// Each field, described in the section's `fields`, requires
+// the file `field/view/{field_name}.php`
+foreach (glob(__DIR__ . '/field/view/*.php') as $field_view)
     require_once $field_view;
-// and the file `sanitize/{field_name}.php`
-foreach (glob(__DIR__ . '/sanitize/*.php') as $sanitizer)
+// and the file `field/sanitize/{field_name}.php`
+foreach (glob(__DIR__ . '/field/sanitize/*.php') as $sanitizer)
     require_once $sanitizer;
+// and this is optional:
+foreach (glob(__DIR__ . '/field/update/*.php') as $hook)
+    require_once $hook;
 
 const NAME = 'cormorant_settings';
 const GROUP = 'cormorant_settings_group';
@@ -38,6 +41,14 @@ const SECTIONS = [
         'name' => 'cormorant_main_settings_section',
         'title' => 'E-mail confirmation',
         'fields' => [
+            [
+                'name' => 'confirmed_tag',
+                'title' => 'Confirmed tag',
+                'input_type' => 'text',
+                'options' => [
+                    'default' => 'confirmed',
+                ],
+            ],
             [
                 'name' => 'email_subject',
                 'title' => 'Confirmation email subject',
