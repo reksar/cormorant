@@ -1,9 +1,9 @@
 <?php namespace settings\confirmed_tag;
 
-const TAG = 'confirmed_tag';
+require_once CORMORANT_DIR . 'core/flamingo.php';
+use const \flamingo\TAG_TAXONOMY;
 
-// `Flamingo_Contact::contact_tag_taxonomy`
-const TAXONOMY = 'flamingo_contact_tag';
+const TAG = 'confirmed_tag';
 
 function update(array $old_settings, array $new_settings)
 {
@@ -35,10 +35,10 @@ function replace($settings, $value)
 
 function update_tag_name($old_value, $new_value)
 {
-    $term = get_term_by('name', $old_value, TAXONOMY)
-        ?: get_term_by('slug', \settings\default_value(TAG), TAXONOMY);
+    $term = get_term_by('name', $old_value, TAG_TAXONOMY)
+        ?: get_term_by('slug', \settings\default_value(TAG), TAG_TAXONOMY);
 
-    wp_update_term($term->term_id, TAXONOMY, [
+    wp_update_term($term->term_id, TAG_TAXONOMY, [
         'name' => $new_value,
     ]);
 }
