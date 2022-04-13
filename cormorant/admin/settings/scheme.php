@@ -15,6 +15,9 @@ foreach (glob(__DIR__ . '/field/view/*.php') as $field_view)
 // and the file `field/sanitize/{field_name}.php`
 foreach (glob(__DIR__ . '/field/sanitize/*.php') as $sanitizer)
     require_once $sanitizer;
+// and this is optional:
+foreach (glob(__DIR__ . '/field/update/*.php') as $hook)
+    require_once $hook;
 
 const NAME = 'cormorant_settings';
 const GROUP = 'cormorant_settings_group';

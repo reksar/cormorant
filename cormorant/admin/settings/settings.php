@@ -30,6 +30,7 @@ function init()
 {
     add_action('admin_init', '\settings\register');
     add_action('admin_menu', '\settings\add_page');
+    add_action('update_option_' . NAME, '\settings\update', 10, 2);
 }
 
 function register()
@@ -56,15 +57,19 @@ function add_page()
         'view\settings');
 }
 
+function update($old_settings, $new_settings)
+{
+    \settings\confirmed_tag\update($old_settings, $new_settings);
+}
+
 /**
  * @return value of the given setting name.
  */
 function get($field_name)
 {
     $settings = get_option(NAME);
-    $value = @$settings[$field_name] ?? default_value($field_name);
     $sanitize = "sanitize\\$field_name";
-    return $sanitize($value);
+    return $sanitize(@$settings[$field_name]) ?: default_value($field_name);
 }
 
 function default_value($field_name)
