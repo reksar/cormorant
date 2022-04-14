@@ -10,11 +10,16 @@ Flamingo add-on for email confirmation.
 == Description ==
 
 When an user submits a Contact Form 7 and the Flamingo gets an incoming 
-contact, the Cormorant emails to that contact with confirmation link, if that 
-contact is not confirmed yet.
+contact, the Cormorant emails to that contact with *confirmation link*,
+if that contact is not confirmed yet.
 
-When an user follows the confirmation link, the Cormorant adds the "confirmed" 
-tag to the related Flamingo contact.
+When an user follows the *confirmation link*, the Cormorant adds the
+*Confirmed tag* to the related Flamingo contact.
+
+Cormorant can also email to the Wordpress admin to notify about a contact
+confirmation.
+
+See Wordpress Settings -> Cormorant.
 
 Requirements:
 https://wordpress.org/plugins/flamingo
