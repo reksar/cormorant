@@ -26,12 +26,6 @@ function sanitize_name($name)
     return sanitize_text_field($name);
 }
 
-// TODO: see TODO in update hook. Maybe this is not needed.
-function is_valid_name($name)
-{
-    return (bool) sanitize_name($name);
-}
-
 function set_name($name)
 {
     $term = get_term_by('slug', SLUG, TAG_TAXONOMY);

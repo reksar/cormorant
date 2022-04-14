@@ -2,7 +2,6 @@
 
 require_once CORMORANT_DIR . 'core/contact/tag/confirmed.php';
 use const \contact\tag\confirmed\SETTING_NAME;
-use function \contact\tag\confirmed\is_valid_name as is_valid;
 
 function update(array $old_settings, array $new_settings)
 {
@@ -12,8 +11,7 @@ function update(array $old_settings, array $new_settings)
     if ($old_value == $new_value)
         return;
 
-    // TODO: check the new value is already empty.
-    if (! is_valid($new_value)) {
+    if (! $new_value) {
         replace($new_settings, $old_value);
         return;
     }
