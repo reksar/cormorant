@@ -5,7 +5,8 @@ require_once 'email/email.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/actions/interface.php';
 
-define('CONFIRMED_TAG', \settings\get('confirmed_tag'));
+require_once 'tag/confirmed.php';
+use const \contact\tag\confirmed\SLUG as CONFIRMED_TAG;
 
 /*
  * `Flamingo_Contact` wrapper.

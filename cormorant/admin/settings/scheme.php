@@ -1,5 +1,7 @@
 <?php namespace settings;
 
+require_once CORMORANT_DIR . 'core/contact/tag/confirmed.php';
+
 // The whole Cormorant WP settings page.
 require_once 'view/settings.php';
 
@@ -42,11 +44,11 @@ const SECTIONS = [
         'title' => 'E-mail confirmation',
         'fields' => [
             [
-                'name' => 'confirmed_tag',
+                'name' => \contact\tag\confirmed\SETTING_NAME,
                 'title' => 'Confirmed tag',
                 'input_type' => 'text',
                 'options' => [
-                    'default' => 'confirmed',
+                    'default' => \contact\tag\confirmed\DEFAULT_NAME,
                 ],
             ],
             [

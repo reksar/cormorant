@@ -23,7 +23,9 @@ function init()
  */
 function activate()
 {
-    if (! \flamingo\is_active())
+    if (\flamingo\is_active())
+        \contact\tag\confirmed\create();
+    else
         \admin\deactivate_due_to_flamingo();
 }
 

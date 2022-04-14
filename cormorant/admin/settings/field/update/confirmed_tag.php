@@ -1,44 +1,29 @@
 <?php namespace settings\confirmed_tag;
 
-require_once CORMORANT_DIR . 'core/flamingo.php';
-use const \flamingo\TAG_TAXONOMY;
-
-const TAG = 'confirmed_tag';
+require_once CORMORANT_DIR . 'core/contact/tag/confirmed.php';
+use const \contact\tag\confirmed\SETTING_NAME;
+use function \contact\tag\confirmed\is_valid_name as is_valid;
 
 function update(array $old_settings, array $new_settings)
 {
-    $old_value = $old_settings[TAG];
-    $new_value = $new_settings[TAG];
+    $old_value = $old_settings[SETTING_NAME];
+    $new_value = $new_settings[SETTING_NAME];
 
     if ($old_value == $new_value)
         return;
 
-    if (is_invalid($new_value)) {
+    // TODO: check the new value is already empty.
+    if (! is_valid($new_value)) {
         replace($new_settings, $old_value);
         return;
     }
 
-    update_tag_name($old_value, $new_value);
-}
-
-function is_invalid($value)
-{
-    return ! \sanitize\confirmed_tag($value);
+    \contact\tag\confirmed\set_name($new_value);
 }
 
 function replace($settings, $value)
 {
     update_option(\settings\NAME, array_replace($settings, [
-        TAG => $value,
+        SETTING_NAME => $value,
     ]));
-}
-
-function update_tag_name($old_value, $new_value)
-{
-    $term = get_term_by('name', $old_value, TAG_TAXONOMY)
-        ?: get_term_by('slug', \settings\default_value(TAG), TAG_TAXONOMY);
-
-    wp_update_term($term->term_id, TAG_TAXONOMY, [
-        'name' => $new_value,
-    ]);
 }

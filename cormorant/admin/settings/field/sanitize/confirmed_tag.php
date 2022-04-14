@@ -1,17 +1,17 @@
 <?php namespace sanitize;
 
+require_once 'err.php';
+use sanitize;
+
+require_once CORMORANT_DIR . 'core/contact/tag/confirmed.php';
+use const \contact\tag\confirmed\SETTING_NAME;
+
 function confirmed_tag($value)
 {
-    $tag = filter_var(sanitize_text_field($value), FILTER_VALIDATE_REGEXP, [
-        // Alphabet, number or -
-        'options' => ['regexp' => '/^[[:alnum:]-]+$/'],
-    ]);
+    $tag_name = \contact\tag\confirmed\sanitize_name($value);
 
-    // This WP function exists when settings are submitted.
-    $add_err = '\add_settings_error';
-    if (! $tag && function_exists($add_err))
-        $add_err(\settings\NAME, 'confirmed_tag',
-            __('Revert setting: Cormorant -> Confirmed tag.'));
+    if (! $tag_name)
+        err(SETTING_NAME, __('Revert Cormorant -> Confirmed tag'));
 
-    return $tag;
+    return $tag_name;
 }
