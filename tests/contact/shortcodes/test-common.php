@@ -22,10 +22,10 @@ const MESSAGE = [
         'email' => 'user@mail.my',
         'textarea-field' => '...',
         'checkbox-field' => [
-            '0' => '',
+            '',
         ],
         'select-field' => [
-            '0' => '1st item',
+            'selected item',
         ],
     ],
     'meta' => [
@@ -75,6 +75,7 @@ const EXPECTED_FIELD_SHORTCODES = [
     '[phone]' => 111222333444,
     '[email]' => 'user@mail.my',
     '[textarea-field]' => '...',
+    '[select-field]' => 'selected item',
 ];
 
 class Test_Common_Shortcodes extends WP_UnitTestCase
