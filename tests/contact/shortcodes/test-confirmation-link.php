@@ -11,7 +11,7 @@ const LINK_TAIL = 'admin-post.php?action=confirm_email&token=this-is-token';
 const ADMIN_URL = 'http://example.org/wp-admin/';
 const URL = ADMIN_URL . LINK_TAIL;
 
-class Test_Cnfirmation_Link_Shortcode extends WP_UnitTestCase
+class Test_Confirmation_Link_Shortcode extends WP_UnitTestCase
 {
     function test_confirmation_link_is_dict_of_one_item()
     {
