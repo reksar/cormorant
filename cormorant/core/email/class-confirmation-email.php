@@ -9,7 +9,7 @@ class Confirmation_Email extends Email
 {
     public function email()
     {
-        return $this->contact->email();
+        return $this->contact()->email();
     }
 
     public function subject()
@@ -24,8 +24,13 @@ class Confirmation_Email extends Email
 
     public function shortcodes()
     {
-        $token = $this->contact->token();
+        $token = $this->contact()->token();
         $link_shortcode = \shortcodes\confirmation_link($token);
         return array_merge(parent::shortcodes(), $link_shortcode);
+    }
+
+    public function contact()
+    {
+        return $this->data['contact_instance'];
     }
 }

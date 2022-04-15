@@ -3,6 +3,7 @@
 require_once 'interface.php';
 use const \actions\ON_CONTACT;
 
+require_once CORMORANT_DIR . 'core/email/email.php';
 require_once CORMORANT_DIR . 'core/contact/contact.php';
 require_once CORMORANT_DIR . 'core/err/class-no-contact.php';
 
@@ -40,7 +41,8 @@ function run(array $form_data): array
     {
         $email = email($form_data);
         $contact = \contact\by_email($email);
-        $contact->ask_confirmation();
+        if (! $contact->is_confirmed())
+            \email\confirmation($contact, $form_data);
     }
     catch (\err\No_Contact $err)
     {

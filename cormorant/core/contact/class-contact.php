@@ -1,9 +1,7 @@
 <?php
 
 require_once 'token.php';
-require_once 'email/email.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
-require_once CORMORANT_DIR . 'core/actions/interface.php';
 
 require_once 'tag/confirmed.php';
 use const \contact\tag\confirmed\SLUG as CONFIRMED_TAG;
@@ -35,18 +33,9 @@ class Contact
         return \contact\token\from_contact($this);
     }
 
-    public function ask_confirmation()
-    {
-        if (! $this->is_confirmed())
-            \email\confirmation($this);
-    }
-
     public function confirm()
     {
-        if (! $this->is_confirmed()) {
-            $this->add_tag(CONFIRMED_TAG);
-            do_action(\actions\ON_CONFIRM, $this);
-        }
+        $this->add_tag(CONFIRMED_TAG);
     }
 
     public function delete()
