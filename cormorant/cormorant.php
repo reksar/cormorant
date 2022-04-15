@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cormorant
  * Description: Flamingo add-on for email confirmation.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: reksarka
  * Author URI: https://github.com/reksar
  * License: GPL-2.0+

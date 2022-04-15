@@ -18,7 +18,7 @@ function create()
 function exists()
 {
     // The WP `term_exists()` is not suitable.
-    return (bool) get_term_by('slug', SLUG, TAG_TAXONOMY);
+    return (bool) term();
 }
 
 function sanitize_name($name)
@@ -28,8 +28,17 @@ function sanitize_name($name)
 
 function set_name($name)
 {
-    $term = get_term_by('slug', SLUG, TAG_TAXONOMY);
-    wp_update_term($term->term_id, TAG_TAXONOMY, [
+    wp_update_term(term()->term_id, TAG_TAXONOMY, [
         'name' => $name,
     ]);
+}
+
+function name()
+{
+    return term()->name;
+}
+
+function term()
+{
+    return get_term_by('slug', SLUG, TAG_TAXONOMY);
 }
