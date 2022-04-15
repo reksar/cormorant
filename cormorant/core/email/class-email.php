@@ -6,15 +6,16 @@ abstract class Email
 {
     const HEADERS = "Content-Type: text/html; charset=UTF-8\n";
 
-    protected $contact;
+    // To fill the email, e.g. to replace shortcodes.
+    protected array $data;
 
     abstract public function email();
     abstract public function subject();
     abstract public function template();
 
-    public function __construct($contact)
+    public function __construct(array $data)
     {
-        $this->contact = $contact;
+        $this->data = $data;
     }
 
     public function send()
@@ -25,8 +26,6 @@ abstract class Email
 
     public function shortcodes()
     {
-        $messages = $this->contact->related_messages();
-        $last_message = (array) end($messages);
-        return \shortcodes\common($last_message);
+        return \shortcodes\common($this->data);
     }
 }

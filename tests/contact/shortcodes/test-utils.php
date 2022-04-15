@@ -5,6 +5,9 @@ use function shortcodes\map_keys;
 use function shortcodes\replace;
 use function shortcodes\replace_pair;
 use function shortcodes\dict_to_pairs;
+use function shortcodes\scalarize;
+use function shortcodes\is_select_value;
+use function shortcodes\scalar_selects;
 
 class Test_Shortcodes_Utils extends WP_UnitTestCase
 {
@@ -91,5 +94,55 @@ class Test_Shortcodes_Utils extends WP_UnitTestCase
                 ['nested array', [1, 2, 3]],
             ],
             dict_to_pairs($dict));
+    }
+
+    function test_is_select()
+    {
+        $select_value = ['some selected value'];
+        $this->assertTrue(is_select_value($select_value));
+
+        $checkbox_value = [''];
+        $this->assertFalse(is_select_value($checkbox_value));
+
+        $array_2 = ['value 1', 'value 2'];
+        $this->assertFalse(is_select_value($array_2));
+
+        $array_3_int = [1, 2, 3];
+        $this->assertFalse(is_select_value($array_3_int));
+
+        $dict = ['key' => 'value'];
+        $this->assertFalse(is_select_value($dict));
+    }
+
+    function test_scalar_selects()
+    {
+        $this->assertSameSetsWithIndex([
+                'select 1' => 'value of select 1',
+                'select 2' => 'value of select 2',
+            ],
+            scalar_selects([
+                'scalar' => 'value',
+                'yet another scalar' => 123,
+                'checkbox' => [''],
+                'select 1' => ['value of select 1'],
+                'select 2' => ['value of select 2'],
+            ]));
+    }
+
+    function test_scalarize()
+    {
+        $this->assertSameSetsWithIndex([
+                'scalar' => 'value',
+                'yet another scalar' => 123,
+                'select 1' => 'value of select 1',
+                'select 2' => 'value of select 2',
+            ],
+            scalarize([
+                'scalar' => 'value',
+                'yet another scalar' => 123,
+                'checkbox' => [''],
+                'select 1' => ['value of select 1'],
+                'select 2' => ['value of select 2'],
+            ]));
     }
 }

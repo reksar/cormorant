@@ -40,6 +40,6 @@ function meta($message)
 
 function fields($message)
 {
-    $dict = array_filter($message['fields'], 'is_scalar');
+    $dict = scalarize($message['fields']);
     return map_keys(SHORTCODE, $dict);
 }
