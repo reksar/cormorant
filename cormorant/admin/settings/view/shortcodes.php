@@ -3,18 +3,18 @@
  * Used in template field views.
  */
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/utils.php';
-const SHORTCODE = '\shortcodes\shortcode';
-const META_SHORTCODE = '\shortcodes\meta_shortcode';
+require_once CORMORANT_DIR . 'core/email/shortcodes/utils.php';
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/common.php';
+require_once CORMORANT_DIR . 'core/email/shortcodes/common.php';
 use const \shortcodes\BASIC_KEYS;
 use const \shortcodes\META_KEYS;
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/confirmation-link.php';
+require_once CORMORANT_DIR . 'core/email/shortcodes/confirmation-link.php';
 use const \shortcodes\CONFIRMATION_LINK;
 
 const SPACE = ' ';
+const SHORTCODE = '\shortcodes\shortcode';
+const META_SHORTCODE = '\shortcodes\meta_shortcode';
 
 function default_shortcodes()
 {

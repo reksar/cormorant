@@ -1,6 +1,6 @@
 <?php
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/utils.php';
+require_once CORMORANT_DIR . 'core/email/shortcodes/utils.php';
 use function shortcodes\map_keys;
 use function shortcodes\replace;
 use function shortcodes\replace_pair;

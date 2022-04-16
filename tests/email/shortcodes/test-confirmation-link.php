@@ -1,6 +1,6 @@
 <?php
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/confirmation-link.php';
+require_once CORMORANT_DIR . 'core/email/shortcodes/confirmation-link.php';
 use function shortcodes\confirmation_link;
 use function shortcodes\confirmation_link_url;
 use function shortcodes\confirmation_link_tail;

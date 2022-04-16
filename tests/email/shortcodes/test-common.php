@@ -1,6 +1,6 @@
 <?php
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/common.php';
+require_once CORMORANT_DIR . 'core/email/shortcodes/common.php';
 use function shortcodes\basic;
 use function shortcodes\meta;
 use function shortcodes\fields;

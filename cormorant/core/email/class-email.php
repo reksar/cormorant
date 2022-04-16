@@ -1,6 +1,6 @@
 <?php
 
-require_once CORMORANT_DIR . 'core/contact/shortcodes/common.php';
+require_once 'shortcodes/common.php';
 
 abstract class Email
 {
