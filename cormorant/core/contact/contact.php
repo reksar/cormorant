@@ -8,6 +8,9 @@ require_once 'class-contact.php';
 require_once CORMORANT_DIR . 'core/flamingo.php';
 require_once CORMORANT_DIR . 'core/err/class-bad-token.php';
 
+require_once 'tag/confirmed.php';
+use const \contact\tag\confirmed\SLUG as CONFIRMED_TAG_SLUG;
+
 function wrap($flamingo_contact)
 {
     return new \Contact($flamingo_contact);
@@ -46,9 +49,9 @@ function find_unconfirmed_in($days)
             // with the taxonomy ...
             'taxonomy' => \flamingo\TAG_TAXONOMY,
             // and the field ...
-            'field' => 'name',
+            'field' => 'slug',
             // that equals to
-            'terms' => \Contact::TAG_CONFIRMED,
+            'terms' => CONFIRMED_TAG_SLUG,
         ]],
     ]);
 
