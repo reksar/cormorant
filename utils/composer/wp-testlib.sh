@@ -14,17 +14,14 @@
 # We need just to install the WP testlib and config without all other shit like
 # a new WP installation and new DB setup. DB creation can be skipped in the
 # original script, but a new WP installation - is not.
-#
-# Used the same DB for dev and tests, but table prefixes are different.
-# Default test prefix is `wptests_`. For example, see:
-# https://develop.svn.wordpress.org/tags/5.9/wp-tests-config-sample.php
 
 WP_TESTS_SUITE_DIR=$TESTS_SUITE_DIR/wp
 WP_TESTS_INCLUDES=$WP_TESTS_SUITE_DIR/includes
 WP_TESTS_DATA=$WP_TESTS_SUITE_DIR/data
 WP_TESTS_CONFIG=$WP_TESTS_SUITE_DIR/wp-tests-config.php
 
-# TODO: check the WP_VERSION of an existing testlib.
+# TODO: check the WP_VERSION of an existing testlib if need to test different
+# WP versions.
 if [ -d $WP_TESTS_INCLUDES ] \
   && [ -d $WP_TESTS_DATA ] \
   && [ -f $WP_TESTS_CONFIG ]
@@ -42,11 +39,12 @@ svn co --quiet $WP_URL/tests/phpunit/data/ $WP_TESTS_DATA
 
 echo Configuring WP tests suite
 
+# See https://develop.svn.wordpress.org/tags/5.9/wp-tests-config-sample.php
 curl -s $WP_URL/wp-tests-config-sample.php > $WP_TESTS_CONFIG
 
 sed -i "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" $WP_TESTS_CONFIG
 
-DB_NAME="getenv('WORDPRESS_DB_NAME', 'wordpress')"
+DB_NAME="getenv('WORDPRESS_TEST_DB_NAME', 'wordpress')"
 sed -i "s/'youremptytestdbnamehere'/$DB_NAME/" $WP_TESTS_CONFIG
 
 DB_USER="getenv('WORDPRESS_DB_USER', 'admin')"

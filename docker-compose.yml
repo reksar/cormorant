@@ -7,7 +7,7 @@ services:
     hostname: mysql
     image: mysql:8
     environment:
-      DATABASES: $WORDPRESS_DB_NAME $WEBMAIL_DB_NAME
+      DATABASES: $WORDPRESS_DB_NAME $WORDPRESS_TEST_DB_NAME $WEBMAIL_DB_NAME
       MYSQL_RANDOM_ROOT_PASSWORD: 1
     env_file:
       - .env
