@@ -129,9 +129,9 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
 
 function containsName(array $contacts, $name)
 {
-    return (bool) count(array_filter($contacts,
+    return (bool) array_filter($contacts,
 
         function($contact) use ($name) {
             return $contact->name() == $name;
-        }));
+        });
 }

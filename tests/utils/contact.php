@@ -2,6 +2,9 @@
 
 const DATE_TIME_FORMAT = 'Y-m-d H:i:s'; // WP `mysql` type for time.
 
+// The delay emulation before tests.
+const EXTRA_TIME = '-1 hour';
+
 function total(): int
 {
     return \Flamingo_Contact::count([
@@ -45,5 +48,6 @@ function days_offset(int $days): string
 {
     return (new \DateTime('now'))
         ->modify("$days days")
+        ->modify(EXTRA_TIME)
         ->format(DATE_TIME_FORMAT);
 }
