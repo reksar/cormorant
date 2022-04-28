@@ -1,5 +1,6 @@
 <?php
 
+require_once TESTS_DIR . '/const.php';
 use const \test\CORMORANT_PLUGIN as CORMORANT_PLUGIN;
 use const \test\FLAMINGO_PLUGIN as FLAMINGO_PLUGIN;
 use const \test\CF7_PLUGIN as CF7_PLUGIN;

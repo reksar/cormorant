@@ -29,6 +29,11 @@ class Contact
         return $this->contact->email;
     }
 
+    public function name()
+    {
+        return $this->contact->name;
+    }
+
     public function token()
     {
         return \contact\token\from_contact($this);

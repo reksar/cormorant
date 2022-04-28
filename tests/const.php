@@ -1,7 +1,7 @@
 <?php namespace test;
 /*
- * Use a namespace here to prevent redefining the FLAMINGO_PLUGIN const in the
- * Flamingo plugin.
+ * The namespace used here prevents conflict with the `FLAMINGO_PLUGIN` const
+ * in the Flamingo plugin.
  */
 
 const CORMORANT_PLUGIN = 'cormorant/cormorant.php';
