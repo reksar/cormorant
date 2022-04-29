@@ -5,8 +5,8 @@ use const \contact\tag\confirmed\SETTING_NAME;
 
 function update(array $old_settings, array $new_settings)
 {
-    $old_value = $old_settings[SETTING_NAME];
-    $new_value = $new_settings[SETTING_NAME];
+    $old_value = @$old_settings[SETTING_NAME];
+    $new_value = @$new_settings[SETTING_NAME];
 
     if ($old_value == $new_value)
         return;
