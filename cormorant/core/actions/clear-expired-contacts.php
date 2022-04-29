@@ -21,7 +21,7 @@ function run()
         return;
 
     $expired_contacts = \contact\find_unconfirmed_in($days_to_confirm);
-    array_walk(CLEAR, $expired_contacts);
+    array_walk($expired_contacts, CLEAR);
 }
 
 function clear($contact)
