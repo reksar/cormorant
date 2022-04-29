@@ -6,41 +6,46 @@ use function \contact\find_unconfirmed_in;
 require_once CORMORANT_DIR . 'core/contact/tag/confirmed.php';
 use const \contact\tag\confirmed\SLUG as CONFIRMED;
 
-require_once TESTS_DIR . '/utils/contact.php';
-
-const UNCONFIRMED_CONTACTS = [
-    ['c-1@mail.my', 'Added Today too'],
-    ['c0@mail.my', 'Added Today'],
-    ['c1@mail.my', 'Added Yesterday', 1],
-    ['c2@mail.my', 'Added 2 Days ago', 2],
-    ['c3@mail.my', 'Added a Week ago', 7, ['some-tag']],
-    ['c4@mail.my', 'Added a Month ago', 30, ['some-tag', 'unconfirmed']],
-];
-define('UNCONFIRMED_TOTAL', count(UNCONFIRMED_CONTACTS));
-
-// NOTE: uses default confirmed tag name same as slug.
-// NOTE: tags like 'unconfirmed' have no effect.
-const CONFIRMED_CONTACTS = [
-    ['c5@mail.my', 'Confirmed Today', 0, [CONFIRMED, 'cormorant-unconfirmed']],
-    ['c6@mail.my', 'Confirmed Yesterday', 1, [CONFIRMED, 'unconfirmed']],
-    ['c7@mail.my', 'Confirmed 2 Days ago', 2, [CONFIRMED, 'not-confirmed']],
-    ['c8@mail.my', 'Confirmed a Month ago', 30, [CONFIRMED, 'a', 'b', 'c']],
-];
-
-const ALL_CONTACTS = [...UNCONFIRMED_CONTACTS, ...CONFIRMED_CONTACTS];
-define('CONTACTS_TOTAL', count(ALL_CONTACTS));
+require_once \test\ROOT_DIR . '/utils/contact.php';
 
 class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
 {
+    // Name, age, array of tags
+    const UNCONFIRMED_CONTACTS = [
+        ['Added Today too'],
+        ['Added Today'],
+        ['Added Yesterday', 1],
+        ['Added 2 Days ago', 2],
+        ['Added a Week ago', 7, ['some-tag']],
+        ['Added a Month ago', 30, ['some-tag', 'unconfirmed']],
+    ];
+    // NOTE: uses default confirmed tag name same as slug.
+    // NOTE: tags like 'unconfirmed' have no effect.
+    const CONFIRMED_CONTACTS = [
+        ['Confirmed Today', 0, [CONFIRMED, 'cormorant-unconfirmed']],
+        ['Confirmed Yesterday', 1, [CONFIRMED, 'unconfirmed']],
+        ['Confirmed 2 Days ago', 2, [CONFIRMED, 'not-confirmed']],
+        ['Confirmed a Month ago', 30, [CONFIRMED, 'a', 'b', 'c']],
+    ];
+
+    const GENERATE_EMAILS = true;
+
+    static int $unconfirmed_total = 0;
+
     static function setUpBeforeClass(): void
     {
-        foreach (ALL_CONTACTS as $args)
-            \utils\contact\add(...$args);
+        \utils\contact\add_all([
+            ...self::UNCONFIRMED_CONTACTS,
+            ...self::CONFIRMED_CONTACTS,
+        ], self::GENERATE_EMAILS);
+
+        self::$unconfirmed_total = count(self::UNCONFIRMED_CONTACTS);
     }
 
     function test_all_contacts_are_added()
     {
-        $this->assertEquals(CONTACTS_TOTAL, \utils\contact\total());
+        $total = self::$unconfirmed_total + count(self::CONFIRMED_CONTACTS);
+        $this->assertEquals($total, \utils\contact\count());
     }
 
     /**
@@ -51,7 +56,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
     {
         $days_to_confirm = 0;
         $contacts = find_unconfirmed_in($days_to_confirm);
-        $this->assertEquals(UNCONFIRMED_TOTAL, count($contacts));
+        $this->assertEquals(self::$unconfirmed_total, count($contacts));
     }
 
     function test_unconfirmed_in_1_day_excludes_today()
@@ -60,7 +65,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
         $contacts = find_unconfirmed_in($days_to_confirm);
         $this->assertFalse(containsName($contacts, 'Added Today'));
         $this->assertFalse(containsName($contacts, 'Added Today too'));
-        $total = UNCONFIRMED_TOTAL - 2;
+        $total = self::$unconfirmed_total - 2;
         $this->assertEquals($total, count($contacts));
     }
 
@@ -71,7 +76,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
         $this->assertFalse(containsName($contacts, 'Added Today'));
         $this->assertFalse(containsName($contacts, 'Added Today too'));
         $this->assertFalse(containsName($contacts, 'Added Yesterday'));
-        $total = UNCONFIRMED_TOTAL - 3;
+        $total = self::$unconfirmed_total - 3;
         $this->assertEquals($total, count($contacts));
     }
 
@@ -83,7 +88,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
         $this->assertFalse(containsName($contacts, 'Added Today too'));
         $this->assertFalse(containsName($contacts, 'Added Yesterday'));
         $this->assertFalse(containsName($contacts, 'Added 2 Days ago'));
-        $total = UNCONFIRMED_TOTAL - 4;
+        $total = self::$unconfirmed_total - 4;
         $this->assertEquals($total, count($contacts));
     }
 
@@ -95,7 +100,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
         $this->assertFalse(containsName($contacts, 'Added Today too'));
         $this->assertFalse(containsName($contacts, 'Added Yesterday'));
         $this->assertFalse(containsName($contacts, 'Added 2 Days ago'));
-        $total = UNCONFIRMED_TOTAL - 4;
+        $total = self::$unconfirmed_total - 4;
         $this->assertEquals($total, count($contacts));
     }
 
@@ -108,7 +113,7 @@ class Test_Find_Unconfirmed_Contacts extends WP_UnitTestCase
         $this->assertFalse(containsName($contacts, 'Added Yesterday'));
         $this->assertFalse(containsName($contacts, 'Added 2 Days ago'));
         $this->assertFalse(containsName($contacts, 'Added a Week ago'));
-        $total = UNCONFIRMED_TOTAL - 5;
+        $total = self::$unconfirmed_total - 5;
         $this->assertEquals($total, count($contacts));
     }
 

@@ -5,28 +5,27 @@
  * @see https://developer.wordpress.org/cli/commands/scaffold/plugin-tests
  */
 
-const TESTS_DIR = __DIR__; // Mounted at <TESTS_SUITE_DIR>/tests
+require_once 'const.php';
+require_once \test\SUITE_DIR . '/composer/vendor/autoload.php';
+require_once \test\SUITE_DIR .
+    '/composer/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
-$_tests_suite_dir = getenv( 'TESTS_SUITE_DIR' );
-$_wp_tests_suite_dir = $_tests_suite_dir . '/wp';
-$_composer_dir = $_tests_suite_dir . '/composer';
+// For `tests_add_filter()`.
+require_once \test\SUITE_DIR . '/wp/includes/functions.php';
 
-require_once $_composer_dir . '/vendor/autoload.php';
-require_once $_composer_dir .
-    '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
+// For `()` inside the `activate_plugin()`.
+require_once \test\WP_DIR . '/wp-includes/pluggable.php';
 
-// Give access to tests_add_filter() function.
-require_once $_wp_tests_suite_dir . '/includes/functions.php';
+// For `activate_plugin()`.
+require_once \test\WP_DIR . '/wp-admin/includes/plugin.php';
 
 /**
  * Manually load the plugins being tested.
  */
-function _manually_load_plugin() {
-	$wp_dir = getenv( 'WP_CORE_DIR' );
-	require $wp_dir . '/wp-content/plugins/cormorant/cormorant.php';
-	require $wp_dir . '/wp-content/plugins/flamingo/flamingo.php';
-}
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter('muplugins_loaded', function() {
+    activate_plugin(\test\FLAMINGO_PLUGIN);
+    activate_plugin(\test\CORMORANT_PLUGIN);
+});
 
 // Start up the WP testing environment.
-require $_wp_tests_suite_dir . '/includes/bootstrap.php';
+require \test\SUITE_DIR . '/wp/includes/bootstrap.php';
